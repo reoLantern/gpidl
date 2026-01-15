@@ -1,0 +1,24 @@
+// .vscode/settings.json
+{
+  "editor.formatOnSave": false,
+
+  "[json]": {
+    "editor.defaultFormatter": "prettier.prettier-vscode",
+    "editor.formatOnSave": true
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "prettier.prettier-vscode",
+    "editor.formatOnSave": true
+  },
+
+  "json.schemas": [
+    {
+      "fileMatch": ["**/*.jsonc"],
+      "url": "./.vscode/schemas/relaxed-jsonc.schema.json"
+    }
+  ],
+
+  // Require a prettier config file in the project to avoid everyone using their own global defaults,
+  // which can lead to inconsistent formatting.
+  "prettier.requireConfig": true
+}

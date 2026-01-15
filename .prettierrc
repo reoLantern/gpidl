@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json.schemastore.org/prettierrc",
+
+  "tabWidth": 2,
+  "useTabs": false,
+  "printWidth": 140,
+  "endOfLine": "lf",
+
+  "overrides": [
+    {
+      "files": ["**/*.jsonc"],
+      "options": {
+        "trailingComma": "all"
+      }
+    },
+    {
+      "files": [".vscode/**/*.json"],
+      "options": {
+        "parser": "jsonc",
+        "trailingComma": "none"
+      }
+    }
+  ]
+}
