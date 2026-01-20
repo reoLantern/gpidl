@@ -90,13 +90,13 @@ JSON 允许的值类型只有六类：
   - notes: 指令的额外说明，是一个字符串列表。
 - local_modifier_defs: 可选项。指令特有的 modifier 定义，格式同 global_modifier_defs。
 - inst_modifiers: 可选项。指令使用的 modifier 列表。只能包含 global_modifier_defs 和本指令 local_modifier_defs 中定义的 modifier。
-- fixed_modifiers: 可选项。modifier 列表，且必须在同级的 form 内部的每一个元素中，使用 fixed_modi_vals 指定值。用于将不同 form 以 modifier 的不同取值的形式区分开来。同一个 modifier 不允许同时出现在 inst_modifiers 和 fixed_modifiers 中。
+- fixed_modifiers: 可选项。modifier 列表，只能包含 global_modifier_defs 和本指令 local_modifier_defs 中定义的 modifier。且必须在同级的 forms 内部的每一个元素中，使用 fixed_modi_vals 指定值。用于将不同 form 以 modifier 的不同取值的形式区分开来。同一个 modifier 不允许同时出现在 inst_modifiers 和 fixed_modifiers 中。
 - forms: 必须项。指令的具体编码形式列表，代表同一个指令下的不同 encoding 形式，不同 form 的操作数数量、功能等可能不同。它的每个元素是一个 object，包含以下字段：
   - key: 必须项。某个 form 的唯一标识符，是一个字符串。
   - fixed_modi_vals: 当本指令有 fixed_modifiers 时，必须项，否则不应定义。用于指定本 form 中每个 fixed_modifiers 的取值。是一个 object，其键名为 fixed_modifiers 中的 modifier 名称，值为该 modifier 在本 form 中的取值。
   - local_modifier_defs: 可选项。该 form 特有的 modifier 定义，格式同 global_modifier_defs。
   - inst_modifiers: 可选项。该 form 使用的 modifier 列表。可以包含 global_modifier_defs、本指令 local_modifier_defs 以及本 form local_modifier_defs 中定义的 modifier。不能包含上级 inst_modifiers 和 fixed_modifiers 中的 modifier。
-  - fixed_modifiers: 可选项。modifier 列表。当且仅当本 form 还包含子 form 列表时才可以定义。用于将不同子 form 以 modifier 的不同取值的形式区分开来。同一个 modifier 不允许同时出现在 inst_modifiers 和 fixed_modifiers 中，也不能包含上级 inst_modifiers 和 fixed_modifiers 中的 modifier。
+  - fixed_modifiers: 可选项。modifier 列表，只能包含 global_modifier_defs 和本指令 local_modifier_defs 中定义的 modifier。当且仅当本 form 还包含子 forms 列表时才可以定义。用于将不同子 form 以 modifier 的不同取值的形式区分开来。同一个 modifier 不允许同时出现在 inst_modifiers 和 fixed_modifiers 中，也不能包含上级 inst_modifiers 和 fixed_modifiers 中的 modifier。
   - operands: 可选项。该 form 的操作数列表。其每个元素是一个 object，包含以下字段：
     - name: 必须项。操作数的名称，是一个字符串。同一 form 的不同 operands 不允许重名，亦不允许与上级 form 的 operands 重名。
     - role: 必须项。操作数的种类，对应 canonical_roles 中定义的操作数种类。
