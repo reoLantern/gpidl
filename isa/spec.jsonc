@@ -173,8 +173,16 @@
       "bits": 1,
       "enum": { "DISABLE": 0, "NaN": 1 },
       "default": "DISABLE",
-      "can_apply_to_inst": ["vfmnmx", "vf_pk_mnmx", "vfmnmx3"],
+      "can_apply_to_inst": ["fmnmx", "hmnmx_pk", "fmnmx3"],
       "meaning": "If .NaN modifier is specified, then the result is canonical NaN if any of the inputs is NaN.",
+    },
+    "xorsign": {
+      // TODO
+      "bits": 1,
+      "enum": { "DISABLE": 0, "XORSIGN": 1 },
+      "default": "DISABLE",
+      "can_apply_to_inst": ["fmnmx", "hmnmx_pk"],
+      "meaning": "If .XORSIGN modifier is specified, the absolute value is taken for each input before comparison. If .XORSIGN is specified, the sign bit of destination d is equal to the XOR of the sign bits of both inputs after taking absolute values.",
     },
     "type_fp16_bf16": {
       "bits": 1,
@@ -214,7 +222,8 @@
           "meaning": "Select the floating-point data type for the operation. FP16 is 16 bits within a 32-bit register, selected via opsel.",
         },
       },
-      "inst_modifiers": ["rnd_mode_fp", "ftz", "saturate", "fp_type"],
+      "inst_modifiers": ["rnd_mode_fp", "ftz", "saturate"],
+      "fixed_modifiers": ["fp_type"],
       "forms": [
         {
           "key": "v_vi",
@@ -329,7 +338,8 @@
           "meaning": "Select the floating-point data type for the operation. FP16 is 16 bits within a 32-bit register, selected via opsel.",
         },
       },
-      "inst_modifiers": ["rnd_mode_fp", "ftz", "fmz", "saturate", "fp_type"],
+      "inst_modifiers": ["rnd_mode_fp", "ftz", "fmz", "saturate"],
+      "fixed_modifiers": ["fp_type"],
       "forms": [
         {
           "key": "v_vvv",
@@ -426,7 +436,7 @@
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
             { "name": "src1", "role": "src1", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel_B32"] },
-            { "name": "src2", "role": "src2", "kind": "imm32", "notes": "contains 2 FP16/BF16 values" },
+            { "name": "src2", "role": "src2", "kind": "imm32" },
           ],
         },
         {
@@ -434,7 +444,7 @@
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
-            { "name": "src1", "role": "src1", "kind": "imm32", "notes": "contains 2 FP16/BF16 values" },
+            { "name": "src1", "role": "src1", "kind": "imm32" },
             { "name": "src2", "role": "src2", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
           ],
         },
@@ -471,7 +481,8 @@
           "meaning": "Select the floating-point data type for the operation. FP16 is 16 bits within a 32-bit register, selected via opsel.",
         },
       },
-      "inst_modifiers": ["fp_type", "NaN"],
+      "inst_modifiers": ["NaN"],
+      "fixed_modifiers": ["fp_type"],
       "forms": [
         {
           "key": "v_vvp",
@@ -580,16 +591,6 @@
         "effect": "dst = pack_mul(src0, src1) (floating-point packed multiplication)",
         "SASS": "HMNMX2",
       },
-      "local_modifier_defs": {
-        "xorsign": {
-          // TODO
-          "bits": 1,
-          "enum": { "DISABLE": 0, "XORSIGN": 1 },
-          "default": "DISABLE",
-          "can_apply_to_inst": ["vfmnmx", "vf_pk_mnmx"],
-          "meaning": "If .XORSIGN modifier is specified, the absolute value is taken for each input before comparison. If .XORSIGN is specified, the sign bit of destination d is equal to the XOR of the sign bits of both inputs after taking absolute values.",
-        },
-      },
       "inst_modifiers": ["ftz", "fmz", "saturate", "type_fp16_bf16", "xorsign", "NaN"],
       "forms": [
         {
@@ -606,7 +607,7 @@
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
-            { "name": "src1", "role": "src1", "kind": "imm32", "notes": "contains 2 FP16/BF16 values" },
+            { "name": "src1", "role": "src1", "kind": "imm32" },
             { "name": "pin0", "role": "pin0", "kind": "pred", "oprnd_flag": ["src_bit_modi"] },
           ],
         },
@@ -674,7 +675,7 @@
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
-            { "name": "src1", "role": "src1", "kind": "imm32", "notes": "contains 2 FP16/BF16 values" },
+            { "name": "src1", "role": "src1", "kind": "imm32" },
           ],
         },
         {
@@ -1115,7 +1116,7 @@
         "effect": "dst = src0 + src1 + src2 (3-input Integer Addition)",
         "SASS": "IADD3",
       },
-      "inst_modifiers": ["ccin"],
+      "fixed_modifiers": ["ccin"],
       "forms": [
         {
           "key": "v_vvv",
@@ -1238,7 +1239,8 @@
           "meaning": "Select whether the operation uses wide integer types.",
         },
       },
-      "inst_modifiers": ["is_signed", "wide", "ccin"],
+      "inst_modifiers": ["is_signed"],
+      "fixed_modifiers": ["wide", "ccin"],
       "forms": [
         {
           "key": "v_vvi",
@@ -1418,7 +1420,7 @@
         ],
         "SASS": "LEA",
       },
-      "inst_modifiers": ["ccin"],
+      "fixed_modifiers": ["ccin"],
       "forms": [
         {
           "key": "v_vvi",
