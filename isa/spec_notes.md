@@ -68,7 +68,9 @@ JSON 允许的值类型只有六类：
 
 顶层对象必须包含以下键：gpidl_version、operand_width_bits、canonical_roles、global_oprnd_flag_defs、global_modifier_defs、instructions。
 
+**唯一性约束：**
 下列列表在其各自作用域内必须元素唯一：canonical_roles、inst_modifiers、fixed_modifiers、forms 的 key、以及 operands 的 name；同时，operands 的 name 不允许与任意上级 form 的 operands 重名。
+modifier_defs 的命名不允许跨层级重复：任意 local_modifier_defs 中的名称不得与 global_modifier_defs 或任意上级 local_modifier_defs 重名；同级的 local_modifier_defs 之间允许重名（例如不同 form 的 local_modifier_defs 可使用相同名称）。
 
 键值对 gpidl_version 是版本号。必须是 JSON 字符串，内容格式不作限制。
 
@@ -101,7 +103,7 @@ JSON 允许的值类型只有六类：
   - effect: 指令的效果描述，是一个字符串。
   - SASS: 指令在 NVIDIA SASS 中的参考名称，可以是字符串或字符串列表。并非一一对应。
   - notes: 指令的额外说明，是一个字符串列表。
-- local_modifier_defs: 可选项。指令特有的 modifier 定义，格式同 global_modifier_defs。
+- local_modifier_defs: 可选项。指令特有的 modifier 定义，格式同 global_modifier_defs，且名称不得与 global_modifier_defs 重名。
 - inst_modifiers: 可选项。指令使用的 modifier 列表。只能包含 global_modifier_defs 和本指令 local_modifier_defs 中定义的 modifier。
 - fixed_modifiers: 可选项。modifier 列表，只能包含 global_modifier_defs 和本指令 local_modifier_defs 中定义的 modifier。且必须在同级的 forms 内部的每一个元素中，使用 fixed_modi_vals 指定值。用于将不同 form 以 modifier 的不同取值的形式区分开来。同一个 modifier 不允许同时出现在 inst_modifiers 和 fixed_modifiers 中。
   - 若某一层定义了 fixed_modifiers，则该层 forms 列表中的每一个元素必须提供 fixed_modi_vals（见下），但其键集合不需要覆盖 fixed_modifiers 的所有组合范围，取值必须为对应 modifier 的 enum label。
@@ -109,7 +111,7 @@ JSON 允许的值类型只有六类：
   - key: 必须项。某个 form 的唯一标识符，是一个字符串。
   - semantics: 可选项。该 form 的语义描述，格式同上级 instruction 的 semantics。
   - fixed_modi_vals: 当本指令有 fixed_modifiers 时，必须项，否则不应定义。用于指定本 form 中每个 fixed_modifiers 的取值。是一个 object，其键名为 fixed_modifiers 中的 modifier 名称，值为该 modifier 在本 form 中的取值。
-  - local_modifier_defs: 可选项。该 form 特有的 modifier 定义，格式同 global_modifier_defs。
+  - local_modifier_defs: 可选项。该 form 特有的 modifier 定义，格式同 global_modifier_defs，且名称不得与 global_modifier_defs 或任意上级 local_modifier_defs 重名。
   - inst_modifiers: 可选项。该 form 使用的 modifier 列表。可以包含 global_modifier_defs、本指令 local_modifier_defs 以及本 form local_modifier_defs 中定义的 modifier。不能包含上级 inst_modifiers 和 fixed_modifiers 中的 modifier。
   - fixed_modifiers: 可选项。modifier 列表，只能包含 global_modifier_defs 和本指令 local_modifier_defs 中定义的 modifier。当且仅当本 form 还包含子 forms 列表时才可以定义。用于将不同子 form 以 modifier 的不同取值的形式区分开来。同一个 modifier 不允许同时出现在 inst_modifiers 和 fixed_modifiers 中，也不能包含上级 inst_modifiers 和 fixed_modifiers 中的 modifier。
   - operands: 可选项。该 form 的操作数列表；若不存在，则表示这一 form 层级没有操作数。其每个元素是一个 object，包含以下字段：
