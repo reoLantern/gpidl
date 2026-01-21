@@ -2050,6 +2050,397 @@
       ],
     },
 
+    "f2fp": {
+      "semantics": {
+        "effect": "SASS-like floating-point convert + pack/unpack/merge family",
+        "notes": [],
+        "SASS": "F2FP",
+      },
+      "forms": [
+        {
+          "key": "pack_ab_fp16bf16_f32",
+          "semantics": {
+            "effect": "",
+            "notes": ["Packed f32->(f16|bf16) conversion (2 lanes)."],
+          },
+          "local_modifier_defs": {
+            "rnd": {
+              "bits": 2,
+              "enum": { "RN": 0, "RZ": 3 },
+              "default": "RN",
+              "meaning": "Rounding selector encoded like SM100a (observed RN=0, RZ=3).",
+            },
+          },
+          "inst_modifiers": ["type_fp16_bf16", "rnd", "ftz", "relu", "satfinite"],
+          "operands": [
+            { "name": "dst", "role": "dst", "kind": "vreg" },
+            { "name": "src0", "role": "src0", "kind": "vreg" },
+            { "name": "src1", "role": "src1", "kind": "vreg" },
+          ],
+        },
+        {
+          "key": "merge_c_fp16bf16_f32",
+          "mnemonic": "F2FP{.relu}{.satfinite}.(F16|BF16).F32.MERGE_C{.RZ} dst, src0, merge_c",
+          "semantics": {
+            "effect": "dst = merge(convert(src0_f32), merge_c)",
+            "notes": ["Scalar f32->(f16|bf16) conversion merged with a 32-bit container operand."],
+          },
+          "local_modifier_defs": {
+            "rnd": {
+              "bits": 2,
+              "enum": { "RN": 0, "RZ": 3 },
+              "default": "RN",
+              "meaning": "Rounding selector encoded like SM100a (observed RN=0, RZ=3).",
+            },
+          },
+          "inst_modifiers": ["type_fp16_bf16", "rnd", "ftz", "relu", "satfinite"],
+          "operands": [
+            { "name": "dst", "role": "dst", "kind": "vreg" },
+            { "name": "src0", "role": "src0", "kind": "vreg" },
+            { "name": "src1", "role": "src1", "kind": "vreg" },
+          ],
+        },
+        {
+          "key": "pack_ab_rs_fp16bf16_f32",
+          "mnemonic": "F2FP{.relu}{.satfinite}.(F16|BF16).F32.PACK_AB.RS dst, src0, src1, rbits",
+          "semantics": {
+            "effect": "dst = pack2_rs(convert(src0_f32), convert(src1_f32), rbits)",
+            "notes": ["Stochastic rounding variant using rbits."],
+          },
+          "inst_modifiers": ["type_fp16_bf16", "ftz", "relu", "satfinite"],
+          "fixed_modifiers": { "rnd": "RS" },
+          "operands": [
+            { "name": "dst", "role": "dst", "kind": "vreg" },
+            { "name": "src0", "role": "src0", "kind": "vreg" },
+            { "name": "src1", "role": "src1", "kind": "vreg" },
+            { "name": "src2", "role": "src2", "kind": "vreg" },
+          ],
+        },
+        {
+          "key": "pack_b_tf32_f32",
+          "mnemonic": "F2FP{.relu}{.satfinite}.TF32.F32.PACK_B{.RZ} dst, src0",
+          "semantics": {
+            "effect": "dst = convert_tf32(src0_f32)",
+            "notes": [
+              "Deterministic TF32 rounding modes use this form.",
+              "Some rounding modes may lower/expand differently depending on the target ISA.",
+            ],
+          },
+          "local_modifier_defs": {
+            "rnd": {
+              "bits": 2,
+              "enum": { "RN": 0, "RZ": 3 },
+              "default": "RN",
+              "meaning": "Rounding selector encoded like SM100a (observed RN=0, RZ=3).",
+            },
+          },
+          "inst_modifiers": ["rnd", "ftz", "relu", "satfinite"],
+          "operands": [
+            { "name": "dst", "role": "dst", "kind": "vreg" },
+            { "name": "src0", "role": "src0", "kind": "vreg" },
+          ],
+        },
+        {
+          "key": "pack_ab_merge_c_fp8x2_f32",
+          "mnemonic": "F2FP.SATFINITE{.relu}.(E4M3|E5M2).F32.PACK_AB_MERGE_C dst, src0, src1, merge_c",
+          "semantics": {
+            "effect": "dst = pack2(convert(src0_f32), convert(src1_f32)) (fp8x2 destination) and merge with merge_c",
+          },
+          "local_modifier_defs": {
+            "dst_fp8_kind": {
+              "bits": 1,
+              "enum": { "E5M2": 0, "E4M3": 1 },
+              "default": "E5M2",
+              "meaning": "Select fp8 encoding family (SM100a pack_ab_merge_c field uses 1 bit for E4M3/E5M2).",
+            },
+          },
+          "inst_modifiers": ["dst_fp8_kind", "ftz", "relu", "satfinite"],
+          "fixed_modifiers": { "satfinite": "satfinite" },
+          "operands": [
+            { "name": "dst", "role": "dst", "kind": "vreg" },
+            { "name": "src0", "role": "src0", "kind": "vreg" },
+            { "name": "src1", "role": "src1", "kind": "vreg" },
+            { "name": "src2", "role": "src2", "kind": "vreg" },
+          ],
+        },
+        {
+          "key": "pack_ab_merge_c_fp6x2_f32",
+          "mnemonic": "F2FP.SATFINITE{.relu}.(E2M3|E3M2).F32.PACK_AB_MERGE_C dst, src0, src1, merge_c",
+          "semantics": {
+            "effect": "dst = pack2(convert(src0_f32), convert(src1_f32)) (fp6x2 destination) and merge with merge_c",
+          },
+          "local_modifier_defs": {
+            "dst_fp6_kind": {
+              "bits": 1,
+              "enum": { "E2M3": 0, "E3M2": 1 },
+              "default": "E2M3",
+              "meaning": "Select fp6 encoding family (SM100a pack_ab_merge_c field uses 1 bit for E2M3/E3M2).",
+            },
+          },
+          "inst_modifiers": ["dst_fp6_kind", "ftz", "relu", "satfinite"],
+          "fixed_modifiers": { "satfinite": "satfinite" },
+          "operands": [
+            { "name": "dst", "role": "dst", "kind": "vreg" },
+            { "name": "src0", "role": "src0", "kind": "vreg" },
+            { "name": "src1", "role": "src1", "kind": "vreg" },
+            { "name": "src2", "role": "src2", "kind": "vreg" },
+          ],
+        },
+        {
+          "key": "pack_ab_merge_c_fp4x2_f32",
+          "mnemonic": "F2FP.SATFINITE{.relu}.E2M1.F32.PACK_AB_MERGE_C dst, src0, src1, merge_c",
+          "semantics": {
+            "effect": "dst = pack2(convert(src0_f32), convert(src1_f32)) (fp4x2 destination) and merge with merge_c",
+          },
+          "inst_modifiers": ["ftz", "relu", "satfinite"],
+          "fixed_modifiers": { "satfinite": "satfinite", "dst_fp4_kind": "E2M1" },
+          "operands": [
+            { "name": "dst", "role": "dst", "kind": "vreg" },
+            { "name": "src0", "role": "src0", "kind": "vreg" },
+            { "name": "src1", "role": "src1", "kind": "vreg" },
+            { "name": "src2", "role": "src2", "kind": "vreg" },
+          ],
+        },
+        {
+          "key": "unpack_b_merge_c_fp8x2_fp16bf16x2",
+          "mnemonic": "F2FP.SATFINITE{.relu}.(E4M3|E5M2).(F16|BF16).UNPACK_B_MERGE_C dst, src0, merge_c",
+          "semantics": {
+            "effect": "dst = pack2(convert(src0_lane0), convert(src0_lane1)) (fp8x2 destination) and merge with merge_c",
+          },
+          "local_modifier_defs": {
+            "dst_fp8_kind": {
+              "bits": 1,
+              "enum": { "E5M2": 0, "E4M3": 1 },
+              "default": "E5M2",
+              "meaning": "Select fp8 encoding family.",
+            },
+          },
+          "inst_modifiers": ["dst_fp8_kind", "type_fp16_bf16", "relu", "satfinite"],
+          "fixed_modifiers": { "satfinite": "satfinite" },
+          "operands": [
+            { "name": "dst", "role": "dst", "kind": "vreg" },
+            { "name": "src0", "role": "src0", "kind": "vreg" },
+            { "name": "src1", "role": "src1", "kind": "vreg" },
+          ],
+        },
+        {
+          "key": "unpack_b_merge_c_fp6x2_fp16bf16x2",
+          "mnemonic": "F2FP.SATFINITE{.relu}.(E2M3|E3M2).(F16|BF16).UNPACK_B_MERGE_C dst, src0, merge_c",
+          "semantics": {
+            "effect": "dst = pack2(convert(src0_lane0), convert(src0_lane1)) (fp6x2 destination) and merge with merge_c",
+          },
+          "local_modifier_defs": {
+            "dst_fp6_kind": {
+              "bits": 1,
+              "enum": { "E2M3": 0, "E3M2": 1 },
+              "default": "E2M3",
+              "meaning": "Select fp6 encoding family.",
+            },
+          },
+          "inst_modifiers": ["dst_fp6_kind", "type_fp16_bf16", "relu", "satfinite"],
+          "fixed_modifiers": { "satfinite": "satfinite" },
+          "operands": [
+            { "name": "dst", "role": "dst", "kind": "vreg" },
+            { "name": "src0", "role": "src0", "kind": "vreg" },
+            { "name": "src1", "role": "src1", "kind": "vreg" },
+          ],
+        },
+        {
+          "key": "unpack_b_merge_c_fp4x2_fp16bf16x2",
+          "mnemonic": "F2FP.SATFINITE{.relu}.E2M1.(F16|BF16).UNPACK_B_MERGE_C dst, src0, merge_c",
+          "semantics": {
+            "effect": "dst = pack2(convert(src0_lane0), convert(src0_lane1)) (fp4x2 destination) and merge with merge_c",
+          },
+          "inst_modifiers": ["type_fp16_bf16", "relu", "satfinite"],
+          "fixed_modifiers": { "satfinite": "satfinite", "dst_fp4_kind": "E2M1" },
+          "operands": [
+            { "name": "dst", "role": "dst", "kind": "vreg" },
+            { "name": "src0", "role": "src0", "kind": "vreg" },
+            { "name": "src1", "role": "src1", "kind": "vreg" },
+          ],
+        },
+        {
+          "key": "unpack_b_f16x2_from_fp8x2",
+          "mnemonic": "F2FP{.relu}.F16.(E4M3|E5M2).UNPACK_B dst, src0",
+          "semantics": {
+            "effect": "dst = pack2(convert(src0_lane0), convert(src0_lane1)) (f16x2 destination)",
+          },
+          "local_modifier_defs": {
+            "src_fp8_kind": {
+              "bits": 1,
+              "enum": { "E5M2": 0, "E4M3": 1 },
+              "default": "E5M2",
+              "meaning": "Select fp8 encoding family for the source in this UNPACK_B form.",
+            },
+          },
+          "inst_modifiers": ["src_fp8_kind", "relu"],
+          "operands": [
+            { "name": "dst", "role": "dst", "kind": "vreg" },
+            { "name": "src0", "role": "src0", "kind": "vreg" },
+          ],
+        },
+        {
+          "key": "unpack_b_f16x2_from_fp6x2",
+          "mnemonic": "F2FP{.relu}.F16.(E2M3|E3M2).UNPACK_B dst, src0",
+          "semantics": {
+            "effect": "dst = pack2(convert(src0_lane0), convert(src0_lane1)) (f16x2 destination)",
+          },
+          "local_modifier_defs": {
+            "src_fp6_kind": {
+              "bits": 1,
+              "enum": { "E2M3": 0, "E3M2": 1 },
+              "default": "E2M3",
+              "meaning": "Select fp6 encoding family for the source in this UNPACK_B form.",
+            },
+          },
+          "inst_modifiers": ["src_fp6_kind", "relu"],
+          "operands": [
+            { "name": "dst", "role": "dst", "kind": "vreg" },
+            { "name": "src0", "role": "src0", "kind": "vreg" },
+          ],
+        },
+        {
+          "key": "unpack_b_f16x2_from_fp4x2",
+          "mnemonic": "F2FP{.relu}.F16.E2M1.UNPACK_B dst, src0",
+          "semantics": {
+            "effect": "dst = pack2(convert(src0_lane0), convert(src0_lane1)) (f16x2 destination)",
+          },
+          "inst_modifiers": ["relu"],
+          "fixed_modifiers": { "src_fp4_kind": "E2M1" },
+          "operands": [
+            { "name": "dst", "role": "dst", "kind": "vreg" },
+            { "name": "src0", "role": "src0", "kind": "vreg" },
+          ],
+        },
+        {
+          "key": "pack_ab_merge_c_ue8m0x2_f32",
+          "mnemonic": "F2FP.SATFINITE.UE8M0x2.F32.PACK_AB_MERGE_C{.RZ|.RP} dst, src0, src1, merge_c",
+          "semantics": {
+            "effect": "dst = pack2(convert(src0_f32), convert(src1_f32)) (ue8m0x2 destination) and merge with merge_c",
+          },
+          "local_modifier_defs": {
+            "rnd": {
+              "bits": 1,
+              "enum": { "RZ": 0, "RP": 1 },
+              "default": "RZ",
+              "meaning": "Restricted rounding set (rz/rp). Encoding bits TBD.",
+            },
+          },
+          "inst_modifiers": ["rnd", "satfinite"],
+          "fixed_modifiers": { "satfinite": "satfinite" },
+          "operands": [
+            { "name": "dst", "role": "dst", "kind": "vreg" },
+            { "name": "src0", "role": "src0", "kind": "vreg" },
+            { "name": "src1", "role": "src1", "kind": "vreg" },
+            { "name": "src2", "role": "src2", "kind": "vreg" },
+          ],
+        },
+        {
+          "key": "unpack_b_merge_c_ue8m0x2_bf16x2",
+          "mnemonic": "F2FP.SATFINITE.UE8M0x2.BF16.UNPACK_B_MERGE_C{.RZ|.RP} dst, src0, merge_c",
+          "semantics": {
+            "effect": "dst = pack2(convert(src0_lane0), convert(src0_lane1)) (ue8m0x2 destination) and merge with merge_c",
+          },
+          "local_modifier_defs": {
+            "rnd": {
+              "bits": 1,
+              "enum": { "RZ": 0, "RP": 1 },
+              "default": "RZ",
+              "meaning": "Restricted rounding set (rz/rp). Encoding bits TBD.",
+            },
+          },
+          "inst_modifiers": ["rnd", "satfinite"],
+          "fixed_modifiers": { "satfinite": "satfinite", "type_fp16_bf16": "BF16" },
+          "operands": [
+            { "name": "dst", "role": "dst", "kind": "vreg" },
+            { "name": "src0", "role": "src0", "kind": "vreg" },
+            { "name": "src1", "role": "src1", "kind": "vreg" },
+          ],
+        },
+        {
+          "key": "unpack_b_bf16x2_from_ue8m0x2",
+          "mnemonic": "F2FP{.relu}.BF16.UE8M0x2.UNPACK_B dst, src0",
+          "semantics": {
+            "effect": "dst = pack2(convert(src0_lane0), convert(src0_lane1)) (bf16x2 destination)",
+          },
+          "inst_modifiers": ["relu"],
+          "fixed_modifiers": { "type_fp16_bf16": "BF16" },
+          "operands": [
+            { "name": "dst", "role": "dst", "kind": "vreg" },
+            { "name": "src0", "role": "src0", "kind": "vreg" },
+          ],
+        },
+        {
+          "key": "pack_ab_merge_c_s2f6x2_f32",
+          "mnemonic": "F2FP.SATFINITE{.relu}.S2F6x2.F32.PACK_AB_MERGE_C dst, src0, src1, scale_factor",
+          "semantics": {
+            "effect": "dst = pack2(convert(src0_f32 / scale0), convert(src1_f32 / scale1)) (s2f6x2 destination)",
+            "notes": ["scale_factor packs two ue8m0 values (scale0/scale1)."],
+          },
+          "local_modifier_defs": {
+            "scale_mode": {
+              "bits": 1,
+              "enum": { "IMM_7F7F": 0, "SRC2_UE8M0x2": 1 },
+              "default": "IMM_7F7F",
+              "meaning": "Select implicit scale-factor (0x7f7f) vs explicit scale-factor operand in src2.",
+            },
+          },
+          "inst_modifiers": ["scale_mode", "ftz", "relu", "satfinite"],
+          "fixed_modifiers": { "satfinite": "satfinite" },
+          "operands": [
+            { "name": "dst", "role": "dst", "kind": "vreg" },
+            { "name": "src0", "role": "src0", "kind": "vreg" },
+            { "name": "src1", "role": "src1", "kind": "vreg" },
+            { "name": "src2", "role": "src2", "kind": "vreg" },
+          ],
+        },
+        {
+          "key": "unpack_b_merge_c_s2f6x2_bf16x2",
+          "mnemonic": "F2FP.SATFINITE{.relu}.S2F6x2.BF16.UNPACK_B_MERGE_C dst, src0, scale_factor",
+          "semantics": {
+            "effect": "dst = pack2(convert(src0_lane0 / scale0), convert(src0_lane1 / scale1)) (s2f6x2 destination)",
+          },
+          "local_modifier_defs": {
+            "scale_mode": {
+              "bits": 1,
+              "enum": { "IMM_7F7F": 0, "SRC1_UE8M0x2": 1 },
+              "default": "IMM_7F7F",
+              "meaning": "Select implicit scale-factor (0x7f7f) vs explicit scale-factor operand in src1.",
+            },
+          },
+          "inst_modifiers": ["scale_mode", "relu", "satfinite"],
+          "fixed_modifiers": { "satfinite": "satfinite", "type_fp16_bf16": "BF16" },
+          "operands": [
+            { "name": "dst", "role": "dst", "kind": "vreg" },
+            { "name": "src0", "role": "src0", "kind": "vreg" },
+            { "name": "src1", "role": "src1", "kind": "vreg" },
+          ],
+        },
+        {
+          "key": "unpack_b_bf16x2_from_s2f6x2",
+          "mnemonic": "F2FP{.relu}.BF16.S2F6x2.UNPACK_B dst, src0, scale_factor",
+          "semantics": {
+            "effect": "dst = pack2(convert(src0_lane0) * scale0, convert(src0_lane1) * scale1) (bf16x2 destination)",
+          },
+          "local_modifier_defs": {
+            "scale_mode": {
+              "bits": 1,
+              "enum": { "IMM_7F7F": 0, "SRC1_UE8M0x2": 1 },
+              "default": "IMM_7F7F",
+              "meaning": "Select implicit scale-factor (0x7f7f) vs explicit scale-factor operand in src1.",
+            },
+          },
+          "inst_modifiers": ["scale_mode", "relu", "satfinite"],
+          "fixed_modifiers": { "type_fp16_bf16": "BF16" },
+          "operands": [
+            { "name": "dst", "role": "dst", "kind": "vreg" },
+            { "name": "src0", "role": "src0", "kind": "vreg" },
+            { "name": "src1", "role": "src1", "kind": "vreg", "oprnd_flag": ["subword_sel"] },
+          ],
+        },
+      ],
+    },
+
     ////////////////////////////////
     /* Miscellaneous Instructions */
     ////////////////////////////////

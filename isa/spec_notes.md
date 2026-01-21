@@ -62,39 +62,49 @@ JSON 允许的值类型只有六类：
 
 # ISA spec 结构说明
 
-此文件试图通过 json 格式定义 GPU ISA 的指令集结构，而不直接定义其具体 encoding。职责是确认指令类型、操作数列表、modifier 等信息，同时添加必要的语义描述和注释说明；未来可考虑接入 Sail 这种 ISA Definition Language 来定义更精确的语义。此后，具体的 encoding 可以通过算法工具自动生成。
+此文件试图通过 jsonc（允许注释的 json）格式定义 GPU ISA 的指令集结构，而不直接定义其具体 encoding。职责是确认指令类型、操作数列表、modifier 等信息，同时添加必要的语义描述和注释说明；未来可考虑接入 Sail 这种 ISA Definition Language 来定义更精确的语义。此后，具体的 encoding 可以通过算法工具自动生成。
 
 下方说明中未提到的字段一律禁止。
 
-键值对 gpidl_version 是版本号。
+顶层对象必须包含以下键：gpidl_version、operand_width_bits、canonical_roles、global_oprnd_flag_defs、global_modifier_defs、instructions。
 
-键值对 operand_width_bits 表示操作数在指令中占据的位宽。
+下列列表在其各自作用域内必须元素唯一：canonical_roles、inst_modifiers、fixed_modifiers、forms 的 key、以及 operands 的 name；同时，operands 的 name 不允许与任意上级 form 的 operands 重名。
+
+键值对 gpidl_version 是版本号。必须是 JSON 字符串，内容格式不作限制。
+
+键值对 operand_width_bits 表示操作数在指令中占据的位宽。其中的值必须是大于等于 0 的整数。
 
 键值对 canonical_roles 是允许的操作数种类。
 
 键值对 global_oprnd_flag_defs 是作用在某个操作数上的 modifier。
 其内部，每个键值对是一个 modifier，包含以下信息：
 - bits: 可选项。表示 modifier 在指令中的位宽。若未指定，则应根据 enum 推断，按照 enum 中最大值所需的位宽计算。
-- enum: 必须项。表示 modifier 的枚举类型，定义了该 modifier 可取的值。可以是 [] 或 {}：前者表示枚举值列表，形如 `"enum": ["A", "B", "C"]`；后者强制指定了枚举值映射，形如 `"enum": { "A": 0, "B": 1, "C": 2 }`。
-- default: 可选项。modifier 的默认值。若指定，则指令的汇编格式中不显示该 modifier 的默认情况的名称。
+  - 若 bits 被指定，则需检查 enum 的取值范围：
+    - enum 为 [] 时，元素数量不得超过 2^bits。
+    - enum 为 {} 时，其值不得超过 bits 可表示的非负整数范围（即 <= 2^bits - 1）。
+- enum: 必须项。表示 modifier 的枚举类型，定义了该 modifier 可取的值。可以是 [] 或 {}：
+  - 前者 [] 表示枚举值列表，形如 `"enum": ["A", "B", "C"]`；
+  - 后者 {} 强制指定了枚举值映射，形如 `"enum": { "A": 0, "B": 1, "C": 2 }`。其值必须是非负整数且不可重复。
+- default: 可选项。modifier 的默认值，应为 enum 元素的 label。若指定，则指令的汇编格式中不显示该 modifier 的默认情况的名称。
 - meaning: 可选项。modifier 的含义描述，可以是字符串（""）或字符串列表（["",""]）。
 
 键值对 global_modifier_defs 是指令中可用的 modifier 定义。这一部分定义了一些指令公用的 modifier，以简化 jsonc 文件的编写。其余每个指令特有的 modifier 则在各自指令的定义中给出。
 其内部，每个键值对是一个 modifier，包含以下信息：
 - bits: 可选项。表示 modifier 在指令中的位宽。若未指定，则应根据 enum 推断。
 - enum: 必须项。表示 modifier 的枚举类型，定义了该 modifier 可取的值。可以是 [] 或 {}，前者表示枚举值列表，后者强制指定了枚举值映射。
-- default: 可选项。modifier 的默认值。若指定，则指令的汇编格式中不显示该 modifier 的默认情况的名称。
+- default: 可选项。modifier 的默认值，应为 enum 元素的 label。若指定，则指令的汇编格式中不显示该 modifier 的默认情况的名称。
 - can_apply_to_inst: 可选项。表示该 modifier 可作用的指令种类列表，对应 instruction 中的指令种类（即每个元素的 key）；若未指定则不做限制。
 - meaning: 可选项。modifier 的含义描述，可以是字符串（""）或字符串列表（["",""]）。
 
 键值对 instructions 定义了具体的指令集。其内部的每个键值对，key 是指令的名称，其 value object 描述指令的具体信息，包含以下字段：
-- semantics: 必须项。指令的语义描述，包含以下字段（以下字段均为可选项）：
+- semantics: 可选项。指令的语义描述，包含以下字段（以下字段均为可选项）：
   - effect: 指令的效果描述，是一个字符串。
   - SASS: 指令在 NVIDIA SASS 中的参考名称，可以是字符串或字符串列表。并非一一对应。
   - notes: 指令的额外说明，是一个字符串列表。
 - local_modifier_defs: 可选项。指令特有的 modifier 定义，格式同 global_modifier_defs。
 - inst_modifiers: 可选项。指令使用的 modifier 列表。只能包含 global_modifier_defs 和本指令 local_modifier_defs 中定义的 modifier。
 - fixed_modifiers: 可选项。modifier 列表，只能包含 global_modifier_defs 和本指令 local_modifier_defs 中定义的 modifier。且必须在同级的 forms 内部的每一个元素中，使用 fixed_modi_vals 指定值。用于将不同 form 以 modifier 的不同取值的形式区分开来。同一个 modifier 不允许同时出现在 inst_modifiers 和 fixed_modifiers 中。
+  - 若某一层定义了 fixed_modifiers，则该层 forms 列表中的每一个元素必须提供 fixed_modi_vals（见下），但其键集合不需要覆盖 fixed_modifiers 的所有组合范围，取值必须为对应 modifier 的 enum label。
 - forms: 必须项。指令的具体编码形式列表，代表同一个指令下的不同 encoding 形式，不同 form 的操作数数量、功能等可能不同。它的每个元素是一个 object，包含以下字段：
   - key: 必须项。某个 form 的唯一标识符，是一个字符串。
   - semantics: 可选项。该 form 的语义描述，格式同上级 instruction 的 semantics。
@@ -102,7 +112,7 @@ JSON 允许的值类型只有六类：
   - local_modifier_defs: 可选项。该 form 特有的 modifier 定义，格式同 global_modifier_defs。
   - inst_modifiers: 可选项。该 form 使用的 modifier 列表。可以包含 global_modifier_defs、本指令 local_modifier_defs 以及本 form local_modifier_defs 中定义的 modifier。不能包含上级 inst_modifiers 和 fixed_modifiers 中的 modifier。
   - fixed_modifiers: 可选项。modifier 列表，只能包含 global_modifier_defs 和本指令 local_modifier_defs 中定义的 modifier。当且仅当本 form 还包含子 forms 列表时才可以定义。用于将不同子 form 以 modifier 的不同取值的形式区分开来。同一个 modifier 不允许同时出现在 inst_modifiers 和 fixed_modifiers 中，也不能包含上级 inst_modifiers 和 fixed_modifiers 中的 modifier。
-  - operands: 可选项。该 form 的操作数列表。其每个元素是一个 object，包含以下字段：
+  - operands: 可选项。该 form 的操作数列表；若不存在，则表示这一 form 层级没有操作数。其每个元素是一个 object，包含以下字段：
     - name: 必须项。操作数的名称，是一个字符串。同一 form 的不同 operands 不允许重名，亦不允许与上级 form 的 operands 重名。
     - role: 必须项。操作数的种类，对应 canonical_roles 中定义的操作数种类。
     - kind: 必须项。操作数的位宽类型，对应 operand_width_bits 中定义的类型。
