@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # Usage:
-#   python3 isa/encoding_synthesis.v1.codex.py isa/spec.jsonc -o isa/encoding.v1.json
-#   python3 isa/encoding_synthesis.v1.codex.py isa/spec.jsonc
+#   python3 isa/encoding_synthesis.v1.py isa/spec.jsonc -o isa/encoding.v1.json
 
 from __future__ import annotations
 
@@ -349,7 +348,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "-o",
         "--output",
-        help="Output JSON path (default: encoding.v1.json alongside spec)",
+        required=True,
+        help="Output JSON path",
     )
     return parser.parse_args()
 
@@ -358,8 +358,6 @@ def main() -> int:
     args = parse_args()
     spec_path = args.spec_path
     output_path = args.output
-    if not output_path:
-        output_path = os.path.join(os.path.dirname(spec_path), "encoding.v1.json")
 
     spec = load_jsonc(spec_path)
     output = synthesize_encodings(spec)

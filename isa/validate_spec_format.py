@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # Usage:
-#   python3 validate_spec_format.codex.py path/to/spec.jsonc
-#   e.g. python3 isa/validate_spec_format.codex.py isa/spec.jsonc
+#   python3 validate_spec_format.py path/to/spec.jsonc
+#   e.g. python3 isa/validate_spec_format.py isa/spec.jsonc
 
 from __future__ import annotations
 

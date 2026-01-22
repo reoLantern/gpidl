@@ -1,0 +1,146 @@
+<!doctype html><html><head><meta charset="utf-8"><title>i2i</title><style>
+:root {
+  --bg: #f7f4ef;
+  --card: #ffffff;
+  --text: #1e1e1e;
+  --muted: #5a5a5a;
+  --border: #d4cec4;
+  --const: #cfd4da;
+  --reserved: #f0f1f3;
+  --modifier: #f6d365;
+  --gap: #ececec;
+  --link: #0b7285;
+  --cell: 18px;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 24px;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "IBM Plex Sans", "DejaVu Sans", sans-serif;
+}
+a { color: var(--link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+header {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+code, .mono {
+  font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+}
+.summary {
+  margin: 12px 0 20px 0;
+  color: var(--muted);
+}
+.inst-list {
+  columns: 3 240px;
+  column-gap: 24px;
+  padding-left: 18px;
+}
+.inst-list li { margin: 4px 0; }
+.encoding {
+  margin: 20px 0;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+}
+.encoding h2 {
+  margin: 0 0 8px 0;
+  font-size: 18px;
+}
+.encoding-meta {
+  color: var(--muted);
+  font-size: 12px;
+  margin-bottom: 10px;
+}
+.bitgrid-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #faf9f7;
+  padding: 6px;
+}
+.bitgrid {
+  border-collapse: collapse;
+  table-layout: fixed;
+  width: auto;
+  margin: 6px 0;
+}
+.bitgrid th,
+.bitgrid td {
+  border: 1px solid var(--border);
+  width: var(--cell);
+  min-width: var(--cell);
+  height: 22px;
+  text-align: center;
+  font-size: 10px;
+  padding: 0;
+  font-family: "Courier Prime", "Courier New", "Nimbus Mono L",
+    "Liberation Mono", monospace;
+}
+.bitgrid th.scale {
+  background: #efe9e1;
+  font-weight: 600;
+}
+.bitcell {
+  font-size: 11px;
+  line-height: 1.1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.bitcell.flag { }
+.vlabel {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  display: inline-block;
+}
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 10px 0;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+}
+.swatch {
+  width: 12px;
+  height: 12px;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+}
+.ranges {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  margin-top: 12px;
+}
+.ranges th, .ranges td {
+  border: 1px solid var(--border);
+  padding: 4px 6px;
+  text-align: left;
+}
+.ranges th {
+  background: #efe9e1;
+  font-weight: 600;
+}
+.note {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 6px;
+}
+@media (max-width: 900px) {
+  .inst-list { columns: 2 200px; }
+}
+@media (max-width: 600px) {
+  .inst-list { columns: 1 200px; }
+  body { margin: 16px; }
+}
+</style></head><body><header><h1>i2i</h1><a href="../index.html">index</a></header><div class="summary">2 forms; bit 0 is LSB (rightmost cell); each row shows up to 64 bits.</div><section class="encoding"><h2>i2i.v_v</h2><div class="encoding-meta">form_path: <span class="mono">v_v</span> | width: 128 bits</div><div class="bitgrid-wrap"><table class="bitgrid"><colgroup><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col></colgroup><tr><th class="scale">127</th><th class="scale">126</th><th class="scale">125</th><th class="scale">124</th><th class="scale">123</th><th class="scale">122</th><th class="scale">121</th><th class="scale">120</th><th class="scale">119</th><th class="scale">118</th><th class="scale">117</th><th class="scale">116</th><th class="scale">115</th><th class="scale">114</th><th class="scale">113</th><th class="scale">112</th><th class="scale">111</th><th class="scale">110</th><th class="scale">109</th><th class="scale">108</th><th class="scale">107</th><th class="scale">106</th><th class="scale">105</th><th class="scale">104</th><th class="scale">103</th><th class="scale">102</th><th class="scale">101</th><th class="scale">100</th><th class="scale">99</th><th class="scale">98</th><th class="scale">97</th><th class="scale">96</th><th class="scale">95</th><th class="scale">94</th><th class="scale">93</th><th class="scale">92</th><th class="scale">91</th><th class="scale">90</th><th class="scale">89</th><th class="scale">88</th><th class="scale">87</th><th class="scale">86</th><th class="scale">85</th><th class="scale">84</th><th class="scale">83</th><th class="scale">82</th><th class="scale">81</th><th class="scale">80</th><th class="scale">79</th><th class="scale">78</th><th class="scale">77</th><th class="scale">76</th><th class="scale">75</th><th class="scale">74</th><th class="scale">73</th><th class="scale">72</th><th class="scale">71</th><th class="scale">70</th><th class="scale">69</th><th class="scale">68</th><th class="scale">67</th><th class="scale">66</th><th class="scale">65</th><th class="scale">64</th></tr><tr><td class="bitcell type-reserved span" colspan="64" style="background-color: #F1F2F4;" title="reserved [127:33] len=95">reserved</td></tr></table><table class="bitgrid"><colgroup><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col></colgroup><tr><th class="scale">63</th><th class="scale">62</th><th class="scale">61</th><th class="scale">60</th><th class="scale">59</th><th class="scale">58</th><th class="scale">57</th><th class="scale">56</th><th class="scale">55</th><th class="scale">54</th><th class="scale">53</th><th class="scale">52</th><th class="scale">51</th><th class="scale">50</th><th class="scale">49</th><th class="scale">48</th><th class="scale">47</th><th class="scale">46</th><th class="scale">45</th><th class="scale">44</th><th class="scale">43</th><th class="scale">42</th><th class="scale">41</th><th class="scale">40</th><th class="scale">39</th><th class="scale">38</th><th class="scale">37</th><th class="scale">36</th><th class="scale">35</th><th class="scale">34</th><th class="scale">33</th><th class="scale">32</th><th class="scale">31</th><th class="scale">30</th><th class="scale">29</th><th class="scale">28</th><th class="scale">27</th><th class="scale">26</th><th class="scale">25</th><th class="scale">24</th><th class="scale">23</th><th class="scale">22</th><th class="scale">21</th><th class="scale">20</th><th class="scale">19</th><th class="scale">18</th><th class="scale">17</th><th class="scale">16</th><th class="scale">15</th><th class="scale">14</th><th class="scale">13</th><th class="scale">12</th><th class="scale">11</th><th class="scale">10</th><th class="scale">9</th><th class="scale">8</th><th class="scale">7</th><th class="scale">6</th><th class="scale">5</th><th class="scale">4</th><th class="scale">3</th><th class="scale">2</th><th class="scale">1</th><th class="scale">0</th></tr><tr><td class="bitcell type-reserved span" colspan="31" style="background-color: #F1F2F4;" title="reserved [127:33] len=95">reserved</td><td class="bitcell type-modifier span" colspan="4" style="background-color: #FCE6B8;" title="modifier [32:29] len=4 name=dst_int_type">dst_int_type</td><td class="bitcell type-modifier" colspan="1" style="background-color: #DCD9F6;" title="modifier [28:28] len=1 name=saturate"><span class="vlabel">saturate</span></td><td class="bitcell type-oprnd_flag flag" colspan="1" style="background-color: #F6D7EC;" title="oprnd_flag [27:27] len=1 name=src_int_modi oprnd=src0"><span class="vlabel">src_int_modi</span></td><td class="bitcell type-oprnd_flag flag" colspan="1" style="background-color: #E5F1C8;" title="oprnd_flag [26:26] len=1 name=opsel oprnd=dst"><span class="vlabel">opsel</span></td><td class="bitcell type-operand span" colspan="8" style="background-color: #F8D4C1;" title="operand [25:18] len=8 name=src0">src0</td><td class="bitcell type-operand span" colspan="8" style="background-color: #D7EAF8;" title="operand [17:10] len=8 name=dst">dst</td><td class="bitcell" style="background-color: #D6DCE3;" title="constant [9:6] len=4 const=0 (0x0)">0</td><td class="bitcell" style="background-color: #D6DCE3;" title="constant [9:6] len=4 const=0 (0x0)">0</td><td class="bitcell" style="background-color: #D6DCE3;" title="constant [9:6] len=4 const=0 (0x0)">0</td><td class="bitcell" style="background-color: #D6DCE3;" title="constant [9:6] len=4 const=0 (0x0)">0</td><td class="bitcell" style="background-color: #E3E7EC;" title="constant [5:0] len=6 const=27 (0x1B)">0</td><td class="bitcell" style="background-color: #E3E7EC;" title="constant [5:0] len=6 const=27 (0x1B)">1</td><td class="bitcell" style="background-color: #E3E7EC;" title="constant [5:0] len=6 const=27 (0x1B)">1</td><td class="bitcell" style="background-color: #E3E7EC;" title="constant [5:0] len=6 const=27 (0x1B)">0</td><td class="bitcell" style="background-color: #E3E7EC;" title="constant [5:0] len=6 const=27 (0x1B)">1</td><td class="bitcell" style="background-color: #E3E7EC;" title="constant [5:0] len=6 const=27 (0x1B)">1</td></tr></table></div><div class="legend"><span class="legend-item"><span class="swatch" style="background:#F1F2F4"></span>reserved</span><span class="legend-item"><span class="swatch" style="background:#FCE6B8"></span>dst_int_type</span><span class="legend-item"><span class="swatch" style="background:#DCD9F6"></span>saturate</span><span class="legend-item"><span class="swatch" style="background:#F6D7EC"></span>src_int_modi</span><span class="legend-item"><span class="swatch" style="background:#E5F1C8"></span>opsel</span><span class="legend-item"><span class="swatch" style="background:#F8D4C1"></span>src0</span><span class="legend-item"><span class="swatch" style="background:#D7EAF8"></span>dst</span><span class="legend-item"><span class="swatch" style="background:#D6DCE3"></span>0</span><span class="legend-item"><span class="swatch" style="background:#E3E7EC"></span>27</span></div><table class="ranges"><tr><th>bits</th><th>len</th><th>type</th><th>name</th><th>constant</th><th>oprnd_idx</th></tr><tr><td class="mono">[5:0]</td><td class="mono">6</td><td>constant</td><td></td><td class="mono">27 (0x1B)</td><td></td></tr><tr><td class="mono">[9:6]</td><td class="mono">4</td><td>constant</td><td></td><td class="mono">0 (0x0)</td><td></td></tr><tr><td class="mono">[17:10]</td><td class="mono">8</td><td>operand</td><td>dst</td><td class="mono"></td><td></td></tr><tr><td class="mono">[25:18]</td><td class="mono">8</td><td>operand</td><td>src0</td><td class="mono"></td><td></td></tr><tr><td class="mono">[26:26]</td><td class="mono">1</td><td>oprnd_flag</td><td>opsel</td><td class="mono"></td><td>dst</td></tr><tr><td class="mono">[27:27]</td><td class="mono">1</td><td>oprnd_flag</td><td>src_int_modi</td><td class="mono"></td><td>src0</td></tr><tr><td class="mono">[28:28]</td><td class="mono">1</td><td>modifier</td><td>saturate</td><td class="mono"></td><td></td></tr><tr><td class="mono">[32:29]</td><td class="mono">4</td><td>modifier</td><td>dst_int_type</td><td class="mono"></td><td></td></tr><tr><td class="mono">[127:33]</td><td class="mono">95</td><td>reserved</td><td></td><td class="mono"></td><td></td></tr></table></section><section class="encoding"><h2>i2i.v_x</h2><div class="encoding-meta">form_path: <span class="mono">v_x</span> | width: 128 bits</div><div class="bitgrid-wrap"><table class="bitgrid"><colgroup><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col></colgroup><tr><th class="scale">127</th><th class="scale">126</th><th class="scale">125</th><th class="scale">124</th><th class="scale">123</th><th class="scale">122</th><th class="scale">121</th><th class="scale">120</th><th class="scale">119</th><th class="scale">118</th><th class="scale">117</th><th class="scale">116</th><th class="scale">115</th><th class="scale">114</th><th class="scale">113</th><th class="scale">112</th><th class="scale">111</th><th class="scale">110</th><th class="scale">109</th><th class="scale">108</th><th class="scale">107</th><th class="scale">106</th><th class="scale">105</th><th class="scale">104</th><th class="scale">103</th><th class="scale">102</th><th class="scale">101</th><th class="scale">100</th><th class="scale">99</th><th class="scale">98</th><th class="scale">97</th><th class="scale">96</th><th class="scale">95</th><th class="scale">94</th><th class="scale">93</th><th class="scale">92</th><th class="scale">91</th><th class="scale">90</th><th class="scale">89</th><th class="scale">88</th><th class="scale">87</th><th class="scale">86</th><th class="scale">85</th><th class="scale">84</th><th class="scale">83</th><th class="scale">82</th><th class="scale">81</th><th class="scale">80</th><th class="scale">79</th><th class="scale">78</th><th class="scale">77</th><th class="scale">76</th><th class="scale">75</th><th class="scale">74</th><th class="scale">73</th><th class="scale">72</th><th class="scale">71</th><th class="scale">70</th><th class="scale">69</th><th class="scale">68</th><th class="scale">67</th><th class="scale">66</th><th class="scale">65</th><th class="scale">64</th></tr><tr><td class="bitcell type-reserved span" colspan="64" style="background-color: #F1F2F4;" title="reserved [127:33] len=95">reserved</td></tr></table><table class="bitgrid"><colgroup><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col></colgroup><tr><th class="scale">63</th><th class="scale">62</th><th class="scale">61</th><th class="scale">60</th><th class="scale">59</th><th class="scale">58</th><th class="scale">57</th><th class="scale">56</th><th class="scale">55</th><th class="scale">54</th><th class="scale">53</th><th class="scale">52</th><th class="scale">51</th><th class="scale">50</th><th class="scale">49</th><th class="scale">48</th><th class="scale">47</th><th class="scale">46</th><th class="scale">45</th><th class="scale">44</th><th class="scale">43</th><th class="scale">42</th><th class="scale">41</th><th class="scale">40</th><th class="scale">39</th><th class="scale">38</th><th class="scale">37</th><th class="scale">36</th><th class="scale">35</th><th class="scale">34</th><th class="scale">33</th><th class="scale">32</th><th class="scale">31</th><th class="scale">30</th><th class="scale">29</th><th class="scale">28</th><th class="scale">27</th><th class="scale">26</th><th class="scale">25</th><th class="scale">24</th><th class="scale">23</th><th class="scale">22</th><th class="scale">21</th><th class="scale">20</th><th class="scale">19</th><th class="scale">18</th><th class="scale">17</th><th class="scale">16</th><th class="scale">15</th><th class="scale">14</th><th class="scale">13</th><th class="scale">12</th><th class="scale">11</th><th class="scale">10</th><th class="scale">9</th><th class="scale">8</th><th class="scale">7</th><th class="scale">6</th><th class="scale">5</th><th class="scale">4</th><th class="scale">3</th><th class="scale">2</th><th class="scale">1</th><th class="scale">0</th></tr><tr><td class="bitcell type-reserved span" colspan="31" style="background-color: #F1F2F4;" title="reserved [127:33] len=95">reserved</td><td class="bitcell type-modifier span" colspan="4" style="background-color: #FCE6B8;" title="modifier [32:29] len=4 name=dst_int_type">dst_int_type</td><td class="bitcell type-modifier" colspan="1" style="background-color: #DCD9F6;" title="modifier [28:28] len=1 name=saturate"><span class="vlabel">saturate</span></td><td class="bitcell type-oprnd_flag flag" colspan="1" style="background-color: #F6D7EC;" title="oprnd_flag [27:27] len=1 name=src_int_modi oprnd=src0"><span class="vlabel">src_int_modi</span></td><td class="bitcell type-oprnd_flag flag" colspan="1" style="background-color: #E5F1C8;" title="oprnd_flag [26:26] len=1 name=opsel oprnd=dst"><span class="vlabel">opsel</span></td><td class="bitcell type-operand span" colspan="8" style="background-color: #F8D4C1;" title="operand [25:18] len=8 name=src0">src0</td><td class="bitcell type-operand span" colspan="8" style="background-color: #D7EAF8;" title="operand [17:10] len=8 name=dst">dst</td><td class="bitcell" style="background-color: #D6DCE3;" title="constant [9:6] len=4 const=1 (0x1)">0</td><td class="bitcell" style="background-color: #D6DCE3;" title="constant [9:6] len=4 const=1 (0x1)">0</td><td class="bitcell" style="background-color: #D6DCE3;" title="constant [9:6] len=4 const=1 (0x1)">0</td><td class="bitcell" style="background-color: #D6DCE3;" title="constant [9:6] len=4 const=1 (0x1)">1</td><td class="bitcell" style="background-color: #E3E7EC;" title="constant [5:0] len=6 const=27 (0x1B)">0</td><td class="bitcell" style="background-color: #E3E7EC;" title="constant [5:0] len=6 const=27 (0x1B)">1</td><td class="bitcell" style="background-color: #E3E7EC;" title="constant [5:0] len=6 const=27 (0x1B)">1</td><td class="bitcell" style="background-color: #E3E7EC;" title="constant [5:0] len=6 const=27 (0x1B)">0</td><td class="bitcell" style="background-color: #E3E7EC;" title="constant [5:0] len=6 const=27 (0x1B)">1</td><td class="bitcell" style="background-color: #E3E7EC;" title="constant [5:0] len=6 const=27 (0x1B)">1</td></tr></table></div><div class="legend"><span class="legend-item"><span class="swatch" style="background:#F1F2F4"></span>reserved</span><span class="legend-item"><span class="swatch" style="background:#FCE6B8"></span>dst_int_type</span><span class="legend-item"><span class="swatch" style="background:#DCD9F6"></span>saturate</span><span class="legend-item"><span class="swatch" style="background:#F6D7EC"></span>src_int_modi</span><span class="legend-item"><span class="swatch" style="background:#E5F1C8"></span>opsel</span><span class="legend-item"><span class="swatch" style="background:#F8D4C1"></span>src0</span><span class="legend-item"><span class="swatch" style="background:#D7EAF8"></span>dst</span><span class="legend-item"><span class="swatch" style="background:#D6DCE3"></span>1</span><span class="legend-item"><span class="swatch" style="background:#E3E7EC"></span>27</span></div><table class="ranges"><tr><th>bits</th><th>len</th><th>type</th><th>name</th><th>constant</th><th>oprnd_idx</th></tr><tr><td class="mono">[5:0]</td><td class="mono">6</td><td>constant</td><td></td><td class="mono">27 (0x1B)</td><td></td></tr><tr><td class="mono">[9:6]</td><td class="mono">4</td><td>constant</td><td></td><td class="mono">1 (0x1)</td><td></td></tr><tr><td class="mono">[17:10]</td><td class="mono">8</td><td>operand</td><td>dst</td><td class="mono"></td><td></td></tr><tr><td class="mono">[25:18]</td><td class="mono">8</td><td>operand</td><td>src0</td><td class="mono"></td><td></td></tr><tr><td class="mono">[26:26]</td><td class="mono">1</td><td>oprnd_flag</td><td>opsel</td><td class="mono"></td><td>dst</td></tr><tr><td class="mono">[27:27]</td><td class="mono">1</td><td>oprnd_flag</td><td>src_int_modi</td><td class="mono"></td><td>src0</td></tr><tr><td class="mono">[28:28]</td><td class="mono">1</td><td>modifier</td><td>saturate</td><td class="mono"></td><td></td></tr><tr><td class="mono">[32:29]</td><td class="mono">4</td><td>modifier</td><td>dst_int_type</td><td class="mono"></td><td></td></tr><tr><td class="mono">[127:33]</td><td class="mono">95</td><td>reserved</td><td></td><td class="mono"></td><td></td></tr></table></section></body></html>

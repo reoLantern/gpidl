@@ -1,0 +1,146 @@
+<!doctype html><html><head><meta charset="utf-8"><title>ISA Encoding Index</title><style>
+:root {
+  --bg: #f7f4ef;
+  --card: #ffffff;
+  --text: #1e1e1e;
+  --muted: #5a5a5a;
+  --border: #d4cec4;
+  --const: #cfd4da;
+  --reserved: #f0f1f3;
+  --modifier: #f6d365;
+  --gap: #ececec;
+  --link: #0b7285;
+  --cell: 18px;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 24px;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "IBM Plex Sans", "DejaVu Sans", sans-serif;
+}
+a { color: var(--link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+header {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+code, .mono {
+  font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+}
+.summary {
+  margin: 12px 0 20px 0;
+  color: var(--muted);
+}
+.inst-list {
+  columns: 3 240px;
+  column-gap: 24px;
+  padding-left: 18px;
+}
+.inst-list li { margin: 4px 0; }
+.encoding {
+  margin: 20px 0;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+}
+.encoding h2 {
+  margin: 0 0 8px 0;
+  font-size: 18px;
+}
+.encoding-meta {
+  color: var(--muted);
+  font-size: 12px;
+  margin-bottom: 10px;
+}
+.bitgrid-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #faf9f7;
+  padding: 6px;
+}
+.bitgrid {
+  border-collapse: collapse;
+  table-layout: fixed;
+  width: auto;
+  margin: 6px 0;
+}
+.bitgrid th,
+.bitgrid td {
+  border: 1px solid var(--border);
+  width: var(--cell);
+  min-width: var(--cell);
+  height: 22px;
+  text-align: center;
+  font-size: 10px;
+  padding: 0;
+  font-family: "Courier Prime", "Courier New", "Nimbus Mono L",
+    "Liberation Mono", monospace;
+}
+.bitgrid th.scale {
+  background: #efe9e1;
+  font-weight: 600;
+}
+.bitcell {
+  font-size: 11px;
+  line-height: 1.1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.bitcell.flag { }
+.vlabel {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  display: inline-block;
+}
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 10px 0;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+}
+.swatch {
+  width: 12px;
+  height: 12px;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+}
+.ranges {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  margin-top: 12px;
+}
+.ranges th, .ranges td {
+  border: 1px solid var(--border);
+  padding: 4px 6px;
+  text-align: left;
+}
+.ranges th {
+  background: #efe9e1;
+  font-weight: 600;
+}
+.note {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 6px;
+}
+@media (max-width: 900px) {
+  .inst-list { columns: 2 200px; }
+}
+@media (max-width: 600px) {
+  .inst-list { columns: 1 200px; }
+  body { margin: 16px; }
+}
+</style></head><body><header><h1>ISA Encoding Index</h1></header><div class="summary">source: isa/encoding.v1.json | encodings: 140 | instructions: 35 | version: 1 | opcode bits: inst=6 | form bits: [4]</div><ul class="inst-list"><li><a href="instructions/LD.html">LD</a> <span class="mono">(1)</span></li><li><a href="instructions/bmsk.html">bmsk</a> <span class="mono">(3)</span></li><li><a href="instructions/brev.html">brev</a> <span class="mono">(3)</span></li><li><a href="instructions/f2f.html">f2f</a> <span class="mono">(2)</span></li><li><a href="instructions/f2i.html">f2i</a> <span class="mono">(2)</span></li><li><a href="instructions/fadd.html">fadd</a> <span class="mono">(6)</span></li><li><a href="instructions/fcmp.html">fcmp</a> <span class="mono">(9)</span></li><li><a href="instructions/ffma.html">ffma</a> <span class="mono">(7)</span></li><li><a href="instructions/flo.html">flo</a> <span class="mono">(3)</span></li><li><a href="instructions/fmnmx.html">fmnmx</a> <span class="mono">(6)</span></li><li><a href="instructions/fmnmx3.html">fmnmx3</a> <span class="mono">(3)</span></li><li><a href="instructions/fmul.html">fmul</a> <span class="mono">(3)</span></li><li><a href="instructions/frnd.html">frnd</a> <span class="mono">(3)</span></li><li><a href="instructions/fsel.html">fsel</a> <span class="mono">(3)</span></li><li><a href="instructions/fsf.html">fsf</a> <span class="mono">(3)</span></li><li><a href="instructions/hadd_pk.html">hadd_pk</a> <span class="mono">(4)</span></li><li><a href="instructions/hcmp_pk.html">hcmp_pk</a> <span class="mono">(9)</span></li><li><a href="instructions/hma_pk.html">hma_pk</a> <span class="mono">(5)</span></li><li><a href="instructions/hmnmx_pk.html">hmnmx_pk</a> <span class="mono">(3)</span></li><li><a href="instructions/hmul_pk.html">hmul_pk</a> <span class="mono">(3)</span></li><li><a href="instructions/i2f.html">i2f</a> <span class="mono">(1)</span></li><li><a href="instructions/i2i.html">i2i</a> <span class="mono">(2)</span></li><li><a href="instructions/iabs.html">iabs</a> <span class="mono">(3)</span></li><li><a href="instructions/iadd3.html">iadd3</a> <span class="mono">(9)</span></li><li><a href="instructions/icmp.html">icmp</a> <span class="mono">(3)</span></li><li><a href="instructions/imad.html">imad</a> <span class="mono">(9)</span></li><li><a href="instructions/imnmx.html">imnmx</a> <span class="mono">(3)</span></li><li><a href="instructions/lop3.html">lop3</a> <span class="mono">(3)</span></li><li><a href="instructions/mov.html">mov</a> <span class="mono">(3)</span></li><li><a href="instructions/nop.html">nop</a> <span class="mono">(1)</span></li><li><a href="instructions/popc.html">popc</a> <span class="mono">(2)</span></li><li><a href="instructions/prmt.html">prmt</a> <span class="mono">(5)</span></li><li><a href="instructions/sel.html">sel</a> <span class="mono">(3)</span></li><li><a href="instructions/shfl.html">shfl</a> <span class="mono">(4)</span></li><li><a href="instructions/shl_add.html">shl_add</a> <span class="mono">(8)</span></li></ul><div class="note">Counts in parentheses are number of forms per instruction.</div></body></html>
