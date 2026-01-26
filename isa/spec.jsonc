@@ -1,7 +1,7 @@
 {
   "gpidl_version": "0.1",
 
-  "operand_width_bits": { "vreg": 8, "sreg": 8, "pred": 2, "imm32": 32, "imm16": 16, "imm12": 12, "imm8": 8, "imm5": 5 },
+  "operand_width_bits": { "vreg": 8, "sreg": 8, "pred": 2, "imm32": 32, "imm24": 24, "imm16": 16, "imm12": 12, "imm8": 8, "imm5": 5 },
 
   "canonical_roles": ["dst", "src0", "src1", "src2", "src3", "pout0", "pout1", "pin0"],
 
@@ -56,6 +56,12 @@
   },
 
   "global_modifier_defs": {
+    "uniform_datapath": {
+      "bits": 1,
+      "enum": { "SIMT": 0, "UNI": 1 },
+      "default": "SIMT",
+      "meaning": "Indicate whether the instruction uses the uniform datapath (scalar operation).",
+    },
     "rnd_mode_fp": {
       "bits": 2,
       "enum": {
@@ -202,6 +208,29 @@
       "bits": 1,
       "enum": { "UNSIGNED": 0, "SIGNED": 1 },
       "meaning": "Select whether the operation treats integers as signed or unsigned.",
+    },
+    "ldst_length": {
+      "bits": 3,
+      "enum": ["U8", "S8", "U16", "S16", "B32", "B64", "B128", "B256"],
+      "meaning": "Select the load/store data length.",
+    },
+    "ldconstant_length": {
+      "bits": 3,
+      "enum": ["U8", "S8", "U16", "S16", "B32", "B64"],
+      "meaning": "Select the load constant data length.",
+    },
+    "consistency_scope": {
+      "enum": ["CTA", "GPU", "SYS"],
+      "meaning": "Select the memory consistency scope for the load/store operation.",
+    },
+    "mem_scope": {
+      "enum": ["generic", "global", "shared", "local"],
+      "meaning": "Select the memory scope for the load/store operation.",
+    },
+    "cache_policy": {
+      // TODO: 有待修正
+      "enum": ["ca", "cg", "cs"],
+      "meaning": "Select the cache policy for the load/store operation.",
     },
   },
 
@@ -969,8 +998,9 @@
     //////////////////////////
     "bmsk": {
       "semantics": {
-        "effect": "dst = ((1 << src0[4:0].u32) - 1) << src1[4:0].u32 (bitmask generation)",
+        "effect": "dst = ((1 << src0[4:0].u32) - 1) << src1[4:0].u32",
         "SASS": "BMSK",
+        "notes": ["Generate a bitmask with length and position specified."],
       },
       "local_modifier_defs": {
         "bound_mode": {
@@ -980,30 +1010,41 @@
         },
       },
       "inst_modifiers": ["bound_mode"],
+      "fixed_modifiers": ["uniform_datapath"],
       "forms": [
         {
-          "key": "v_vi",
-          "operands": [
-            { "name": "dst", "role": "dst", "kind": "vreg" },
-            { "name": "src0", "role": "src0", "kind": "vreg" },
-            { "name": "src1", "role": "src1", "kind": "imm32" },
+          "key": "vector",
+          "fixed_modi_vals": { "uniform_datapath": "SIMT" },
+          "forms": [
+            {
+              "key": "v_vi",
+              "operands": [
+                { "name": "dst", "role": "dst", "kind": "vreg" },
+                { "name": "src0", "role": "src0", "kind": "vreg" },
+                { "name": "src1", "role": "src1", "kind": "imm32" },
+              ],
+            },
+            {
+              "key": "v_vx",
+              "operands": [
+                { "name": "dst", "role": "dst", "kind": "vreg" },
+                { "name": "src0", "role": "src0", "kind": "vreg" },
+                { "name": "src1", "role": "src1", "kind": "sreg" },
+              ],
+            },
+            {
+              "key": "v_vv",
+              "operands": [
+                { "name": "dst", "role": "dst", "kind": "vreg" },
+                { "name": "src0", "role": "src0", "kind": "vreg" },
+                { "name": "src1", "role": "src1", "kind": "vreg" },
+              ],
+            },
           ],
         },
         {
-          "key": "v_vx",
-          "operands": [
-            { "name": "dst", "role": "dst", "kind": "vreg" },
-            { "name": "src0", "role": "src0", "kind": "vreg" },
-            { "name": "src1", "role": "src1", "kind": "sreg" },
-          ],
-        },
-        {
-          "key": "v_vv",
-          "operands": [
-            { "name": "dst", "role": "dst", "kind": "vreg" },
-            { "name": "src0", "role": "src0", "kind": "vreg" },
-            { "name": "src1", "role": "src1", "kind": "vreg" },
-          ],
+          "key": "scalar",
+          "fixed_modi_vals": { "uniform_datapath": "UNI" },
         },
       ],
     },
@@ -1827,14 +1868,61 @@
     /////////////////////////////
     "LD": {
       "semantics": {
-        "effect": "Load from generic Memory",
+        "effect": "Load from generic memory",
+        "notes": ["offset 与 saddr 正好凑成 32 bit encoding"],
       },
+      "inst_modifiers": ["ldst_length", "consistency_scope", "mem_scope", "cache_policy"],
       "forms": [
         {
-          "key": "v_addr",
+          "key": "ur+r+imm",
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
-            { "name": "address", "role": "src0", "kind": "vreg" },
+            { "name": "vaddr", "role": "src0", "kind": "vreg" },
+            { "name": "saddr", "role": "src1", "kind": "sreg" },
+            { "name": "offset", "role": "src2", "kind": "imm24" },
+          ],
+        },
+      ],
+    },
+    "ST": {
+      "semantics": {
+        "effect": "Store to generic memory",
+      },
+      "inst_modifiers": ["ldst_length", "consistency_scope", "mem_scope", "cache_policy"],
+      "forms": [
+        {
+          "key": "ur+r+imm",
+          "operands": [
+            { "name": "vaddr", "role": "src0", "kind": "vreg" },
+            { "name": "saddr", "role": "src1", "kind": "sreg" },
+            { "name": "offset", "role": "src2", "kind": "imm24" },
+            { "name": "data", "role": "src3", "kind": "vreg" },
+          ],
+        },
+      ],
+    },
+    "LDC": {
+      "semantics": {
+        "effect": "Load from constant memory",
+      },
+      "inst_modifiers": ["ldst_length"],
+      "forms": [
+        {
+          "key": "cx[ur][r+imm]",
+          "operands": [
+            { "name": "dst", "role": "dst", "kind": "vreg" },
+            { "name": "vaddr", "role": "src0", "kind": "vreg" },
+            { "name": "saddr", "role": "src1", "kind": "sreg" },
+            { "name": "offset", "role": "src2", "kind": "imm16" },
+          ],
+        },
+        {
+          "key": "cx[imm5][r+imm16]",
+          "operands": [
+            { "name": "dst", "role": "dst", "kind": "vreg" },
+            { "name": "const_bank", "role": "src0", "kind": "imm5" },
+            { "name": "saddr", "role": "src1", "kind": "sreg" },
+            { "name": "offset", "role": "src2", "kind": "imm16" },
           ],
         },
       ],
@@ -1983,5 +2071,8 @@
         },
       ],
     },
+    ///////////////////////////////////
+    /* Uniform Datapath Instructions */
+    ///////////////////////////////////
   },
 }
