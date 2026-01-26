@@ -47,6 +47,7 @@ JSON 允许的值类型只有六类：
 - SGPR: 每个 warp 有最多 63 个 SGPR（scalar general-purpose register），编号为 UR0 ~ UR62，而 UR63 表示 0，记为 URZ。每个 SGPR 为 warp 的所有 thread 共享存放 32-bit 数据，共 32-bit。
 
 - Predicate Register: 每个 warp 有最多 7 个 predicate register，编号为 P0 ~ P6，而 P7 表示 True，记为 PT。每个 predicate register 为 warp 的所有 thread 各自存放 1-bit 数据，共 32-bit。亦可理解成每个 thread 有最多 7 个私有的 1-bit predicate 寄存器。
+  - 对于某些以 predicate register 为 destination 的指令，当指令编码位的 predicate field 为 P7（True）时，表示该指令的相应的 desination predicate register 不写入任何值。这通常用于可选的 predicate 更新操作。
 
 - Unified Predicate Register: 每个 warp 有最多 7 个 unified predicate register，编号为 UP0 ~ UP6，而 UP7 表示 True，记为 UPT。每个 unified predicate register 为 warp 的所有 thread 共享存放 1-bit 数据，共 1-bit。
 
