@@ -245,32 +245,29 @@
         "notes": ["floating-point addition"],
       },
       "inst_modifiers": ["rnd_mode_fp", "ftz", "saturate"],
-      "forms": [
-        {
-          "key": "v_vi",
+      "forms": {
+        "v_vi": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi"] },
             { "name": "src1", "role": "src1", "kind": "imm32" },
           ],
         },
-        {
-          "key": "v_vv",
+        "v_vv": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi"] },
             { "name": "src1", "role": "src1", "kind": "vreg", "oprnd_flag": ["src_fp_modi"] },
           ],
         },
-        {
-          "key": "v_vx",
+        "v_vx": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi"] },
             { "name": "src1", "role": "src1", "kind": "sreg", "oprnd_flag": ["src_fp_modi"] },
           ],
         },
-      ],
+      },
     },
     "hadd_pk": {
       "semantics": {
@@ -279,25 +276,22 @@
         "notes": ["floating-point half-precision (FP16/BF16) packed addition"],
       },
       "inst_modifiers": ["ftz", "saturate", "type_fp16_bf16"],
-      "forms": [
-        {
-          "key": "v_vv",
+      "forms": {
+        "v_vv": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
             { "name": "src1", "role": "src1", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
           ],
         },
-        {
-          "key": "v_vi",
+        "v_vi": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
             { "name": "src1", "role": "src1", "kind": "imm16" },
           ],
         },
-        {
-          "key": "v_vii",
+        "v_vii": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
@@ -305,15 +299,14 @@
             { "name": "src2", "role": "src2", "kind": "imm16" },
           ],
         },
-        {
-          "key": "v_vx",
+        "v_vx": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
             { "name": "src1", "role": "src1", "kind": "sreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
           ],
         },
-      ],
+      },
     },
     "ffma": {
       "semantics": {
@@ -331,9 +324,8 @@
       },
       "inst_modifiers": ["rnd_mode_fp", "ftz", "fmz", "saturate"],
       "fixed_modifiers": ["fp_type"],
-      "forms": [
-        {
-          "key": "v_vvv",
+      "forms": {
+        "v_vvv": {
           "fixed_modi_vals": { "fp_type": "FP32" },
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
@@ -342,8 +334,7 @@
             { "name": "src2", "role": "src2", "kind": "vreg", "oprnd_flag": ["src_fp_modi"] },
           ],
         },
-        {
-          "key": "v_vvi",
+        "v_vvi": {
           "fixed_modi_vals": { "fp_type": "FP32" },
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
@@ -352,8 +343,7 @@
             { "name": "src2", "role": "src2", "kind": "imm32" },
           ],
         },
-        {
-          "key": "v_vxi",
+        "v_vxi": {
           "fixed_modi_vals": { "fp_type": "FP32" },
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
@@ -362,8 +352,7 @@
             { "name": "src2", "role": "src2", "kind": "imm32" },
           ],
         },
-        {
-          "key": "v_vvx",
+        "v_vvx": {
           "fixed_modi_vals": { "fp_type": "FP32" },
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
@@ -372,8 +361,7 @@
             { "name": "src2", "role": "src2", "kind": "sreg", "oprnd_flag": ["src_fp_modi"] },
           ],
         },
-        {
-          "key": "f16.v_vvv",
+        "f16.v_vvv": {
           "fixed_modi_vals": { "fp_type": "FP16" },
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
@@ -382,8 +370,7 @@
             { "name": "src2", "role": "src2", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "opsel"] },
           ],
         },
-        {
-          "key": "f16.v_vvi",
+        "f16.v_vvi": {
           "fixed_modi_vals": { "fp_type": "FP16" },
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
@@ -392,8 +379,7 @@
             { "name": "src2", "role": "src2", "kind": "imm16" },
           ],
         },
-        {
-          "key": "f16.v_vvx",
+        "f16.v_vvx": {
           "fixed_modi_vals": { "fp_type": "FP16" },
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
@@ -402,7 +388,7 @@
             { "name": "src2", "role": "src2", "kind": "sreg", "oprnd_flag": ["src_fp_modi", "opsel"] },
           ],
         },
-      ],
+      },
     },
     "hma_pk": {
       "semantics": {
@@ -411,9 +397,8 @@
         "notes": ["floating-point half-precision (FP16/BF16) packed fused multiply-add"],
       },
       "inst_modifiers": ["ftz", "fmz", "saturate", "type_fp16_bf16"],
-      "forms": [
-        {
-          "key": "v_vvv",
+      "forms": {
+        "v_vvv": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
@@ -421,8 +406,7 @@
             { "name": "src2", "role": "src2", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
           ],
         },
-        {
-          "key": "v_vvi",
+        "v_vvi": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
@@ -430,8 +414,7 @@
             { "name": "src2", "role": "src2", "kind": "imm32" },
           ],
         },
-        {
-          "key": "v_viv",
+        "v_viv": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
@@ -439,8 +422,7 @@
             { "name": "src2", "role": "src2", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
           ],
         },
-        {
-          "key": "v_vxv",
+        "v_vxv": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
@@ -448,8 +430,7 @@
             { "name": "src2", "role": "src2", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
           ],
         },
-        {
-          "key": "v_vvx",
+        "v_vvx": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
@@ -457,7 +438,7 @@
             { "name": "src2", "role": "src2", "kind": "sreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
           ],
         },
-      ],
+      },
     },
     "fmnmx": {
       "semantics": {
@@ -474,9 +455,8 @@
       },
       "inst_modifiers": ["NaN"],
       "fixed_modifiers": ["fp_type"],
-      "forms": [
-        {
-          "key": "v_vvp",
+      "forms": {
+        "v_vvp": {
           "fixed_modi_vals": { "fp_type": "FP32" },
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
@@ -485,8 +465,7 @@
             { "name": "pin0", "role": "pin0", "kind": "pred", "oprnd_flag": ["src_bit_modi"] },
           ],
         },
-        {
-          "key": "v_vip",
+        "v_vip": {
           "fixed_modi_vals": { "fp_type": "FP32" },
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
@@ -495,8 +474,7 @@
             { "name": "pin0", "role": "pin0", "kind": "pred", "oprnd_flag": ["src_bit_modi"] },
           ],
         },
-        {
-          "key": "v_vxp",
+        "v_vxp": {
           "fixed_modi_vals": { "fp_type": "FP32" },
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
@@ -505,8 +483,7 @@
             { "name": "pin0", "role": "pin0", "kind": "pred", "oprnd_flag": ["src_bit_modi"] },
           ],
         },
-        {
-          "key": "f16.v_vvp",
+        "f16.v_vvp": {
           "fixed_modi_vals": { "fp_type": "FP16" },
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
@@ -515,8 +492,7 @@
             { "name": "pin0", "role": "pin0", "kind": "pred", "oprnd_flag": ["src_bit_modi"] },
           ],
         },
-        {
-          "key": "f16.v_vip",
+        "f16.v_vip": {
           "fixed_modi_vals": { "fp_type": "FP16" },
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
@@ -525,8 +501,7 @@
             { "name": "pin0", "role": "pin0", "kind": "pred", "oprnd_flag": ["src_bit_modi"] },
           ],
         },
-        {
-          "key": "f16.v_vxp",
+        "f16.v_vxp": {
           "fixed_modi_vals": { "fp_type": "FP16" },
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
@@ -535,7 +510,7 @@
             { "name": "pin0", "role": "pin0", "kind": "pred", "oprnd_flag": ["src_bit_modi"] },
           ],
         },
-      ],
+      },
     },
     "fmnmx3": {
       "semantics": {
@@ -544,9 +519,8 @@
         "notes": ["FP32 3-operand min/max with predicate"],
       },
       "inst_modifiers": ["NaN"],
-      "forms": [
-        {
-          "key": "v_vvvp",
+      "forms": {
+        "v_vvvp": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi"] },
@@ -555,8 +529,7 @@
             { "name": "pin0", "role": "pin0", "kind": "pred", "oprnd_flag": ["src_bit_modi"] },
           ],
         },
-        {
-          "key": "v_vvip",
+        "v_vvip": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi"] },
@@ -565,8 +538,7 @@
             { "name": "pin0", "role": "pin0", "kind": "pred", "oprnd_flag": ["src_bit_modi"] },
           ],
         },
-        {
-          "key": "v_vvxp",
+        "v_vvxp": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi"] },
@@ -575,7 +547,7 @@
             { "name": "pin0", "role": "pin0", "kind": "pred", "oprnd_flag": ["src_bit_modi"] },
           ],
         },
-      ],
+      },
     },
     "hmnmx_pk": {
       "semantics": {
@@ -583,9 +555,8 @@
         "SASS": "HMNMX2",
       },
       "inst_modifiers": ["ftz", "fmz", "saturate", "type_fp16_bf16", "xorsign", "NaN"],
-      "forms": [
-        {
-          "key": "v_vvp",
+      "forms": {
+        "v_vvp": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
@@ -593,8 +564,7 @@
             { "name": "pin0", "role": "pin0", "kind": "pred", "oprnd_flag": ["src_bit_modi"] },
           ],
         },
-        {
-          "key": "v_vip",
+        "v_vip": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
@@ -602,8 +572,7 @@
             { "name": "pin0", "role": "pin0", "kind": "pred", "oprnd_flag": ["src_bit_modi"] },
           ],
         },
-        {
-          "key": "v_vxp",
+        "v_vxp": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
@@ -611,7 +580,7 @@
             { "name": "pin0", "role": "pin0", "kind": "pred", "oprnd_flag": ["src_bit_modi"] },
           ],
         },
-      ],
+      },
     },
     "fmul": {
       "semantics": {
@@ -619,32 +588,29 @@
         "SASS": "FMUL",
       },
       "inst_modifiers": ["rnd_mode_fp", "ftz", "saturate", "output_modifier_2"],
-      "forms": [
-        {
-          "key": "v_vv",
+      "forms": {
+        "v_vv": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi"] },
             { "name": "src1", "role": "src1", "kind": "vreg", "oprnd_flag": ["src_fp_modi"] },
           ],
         },
-        {
-          "key": "v_vi",
+        "v_vi": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi"] },
             { "name": "src1", "role": "src1", "kind": "imm32" },
           ],
         },
-        {
-          "key": "v_vx",
+        "v_vx": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi"] },
             { "name": "src1", "role": "src1", "kind": "sreg", "oprnd_flag": ["src_fp_modi"] },
           ],
         },
-      ],
+      },
     },
     "hmul_pk": {
       "semantics": {
@@ -652,32 +618,29 @@
         "SASS": "HMUL2",
       },
       "inst_modifiers": ["ftz", "fmz", "saturate", "type_fp16_bf16"],
-      "forms": [
-        {
-          "key": "v_vv",
+      "forms": {
+        "v_vv": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
             { "name": "src1", "role": "src1", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
           ],
         },
-        {
-          "key": "v_vi",
+        "v_vi": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
             { "name": "src1", "role": "src1", "kind": "imm32" },
           ],
         },
-        {
-          "key": "v_vx",
+        "v_vx": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
             { "name": "src1", "role": "src1", "kind": "sreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
           ],
         },
-      ],
+      },
     },
     "fsel": {
       "semantics": {
@@ -685,9 +648,8 @@
         "SASS": "FSEL",
       },
       "inst_modifiers": ["ftz"],
-      "forms": [
-        {
-          "key": "v_vvp",
+      "forms": {
+        "v_vvp": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi"] },
@@ -695,8 +657,7 @@
             { "name": "pin0", "role": "pin0", "kind": "pred", "oprnd_flag": ["src_bit_modi"] },
           ],
         },
-        {
-          "key": "v_vip",
+        "v_vip": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi"] },
@@ -704,8 +665,7 @@
             { "name": "pin0", "role": "pin0", "kind": "pred", "oprnd_flag": ["src_bit_modi"] },
           ],
         },
-        {
-          "key": "v_vxp",
+        "v_vxp": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi"] },
@@ -713,7 +673,7 @@
             { "name": "pin0", "role": "pin0", "kind": "pred", "oprnd_flag": ["src_bit_modi"] },
           ],
         },
-      ],
+      },
     },
     "fcmp": {
       "semantics": {
@@ -724,15 +684,13 @@
         ],
       },
       "inst_modifiers": ["fp_cmp_type", "pred_comb"],
-      "forms": [
-        {
-          "key": "fset",
+      "forms": {
+        "fset": {
           "semantics": {
             "SASS": "FSET",
           },
-          "forms": [
-            {
-              "key": "v_vvp",
+          "forms": {
+            "v_vvp": {
               "inst_modifiers": ["BoolFM"],
               "operands": [
                 { "name": "dst", "role": "dst", "kind": "vreg" },
@@ -741,8 +699,7 @@
                 { "name": "pin0", "role": "pin0", "kind": "pred", "oprnd_flag": ["src_bit_modi"] },
               ],
             },
-            {
-              "key": "v_vip",
+            "v_vip": {
               "inst_modifiers": ["BoolFM"],
               "operands": [
                 { "name": "dst", "role": "dst", "kind": "vreg" },
@@ -751,8 +708,7 @@
                 { "name": "pin0", "role": "pin0", "kind": "pred", "oprnd_flag": ["src_bit_modi"] },
               ],
             },
-            {
-              "key": "v_vxp",
+            "v_vxp": {
               "inst_modifiers": ["BoolFM"],
               "operands": [
                 { "name": "dst", "role": "dst", "kind": "vreg" },
@@ -761,16 +717,14 @@
                 { "name": "pin0", "role": "pin0", "kind": "pred", "oprnd_flag": ["src_bit_modi"] },
               ],
             },
-          ],
+          },
         },
-        {
-          "key": "fsetp",
+        "fsetp": {
           "semantics": {
             "SASS": ["FSETP"],
           },
-          "forms": [
-            {
-              "key": "p_vvp",
+          "forms": {
+            "p_vvp": {
               "operands": [
                 { "name": "pout0", "role": "pout0", "kind": "pred" },
                 { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi"] },
@@ -778,8 +732,7 @@
                 { "name": "pin0", "role": "pin0", "kind": "pred", "oprnd_flag": ["src_bit_modi"] },
               ],
             },
-            {
-              "key": "p_vip",
+            "p_vip": {
               "operands": [
                 { "name": "pout0", "role": "pout0", "kind": "pred" },
                 { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi"] },
@@ -787,8 +740,7 @@
                 { "name": "pin0", "role": "pin0", "kind": "pred", "oprnd_flag": ["src_bit_modi"] },
               ],
             },
-            {
-              "key": "p_vxp",
+            "p_vxp": {
               "operands": [
                 { "name": "pout0", "role": "pout0", "kind": "pred" },
                 { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi"] },
@@ -796,8 +748,7 @@
                 { "name": "pin0", "role": "pin0", "kind": "pred", "oprnd_flag": ["src_bit_modi"] },
               ],
             },
-            {
-              "key": "x_vvp",
+            "x_vvp": {
               "operands": [
                 { "name": "dst", "role": "dst", "kind": "sreg" },
                 { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi"] },
@@ -805,8 +756,7 @@
                 { "name": "pin0", "role": "pin0", "kind": "pred", "oprnd_flag": ["src_bit_modi"] },
               ],
             },
-            {
-              "key": "x_vip",
+            "x_vip": {
               "operands": [
                 { "name": "dst", "role": "dst", "kind": "sreg" },
                 { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi"] },
@@ -814,8 +764,7 @@
                 { "name": "pin0", "role": "pin0", "kind": "pred", "oprnd_flag": ["src_bit_modi"] },
               ],
             },
-            {
-              "key": "x_vxp",
+            "x_vxp": {
               "operands": [
                 { "name": "dst", "role": "dst", "kind": "sreg" },
                 { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi"] },
@@ -823,9 +772,9 @@
                 { "name": "pin0", "role": "pin0", "kind": "pred", "oprnd_flag": ["src_bit_modi"] },
               ],
             },
-          ],
+          },
         },
-      ],
+      },
     },
     "hcmp_pk": {
       "semantics": {
@@ -838,15 +787,13 @@
         "SASS": ["HSET2", "HSETP2"],
       },
       "inst_modifiers": ["ftz", "fp_cmp_type", "pred_comb", "type_fp16_bf16"],
-      "forms": [
-        {
-          "key": "hset2",
+      "forms": {
+        "hset2": {
           "semantics": {
             "SASS": "HSET2",
           },
-          "forms": [
-            {
-              "key": "x_vvp",
+          "forms": {
+            "x_vvp": {
               "operands": [
                 { "name": "dst", "role": "dst", "kind": "sreg" },
                 { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
@@ -854,8 +801,7 @@
                 { "name": "pin0", "role": "pin0", "kind": "pred", "oprnd_flag": ["src_bit_modi"] },
               ],
             },
-            {
-              "key": "x_viip",
+            "x_viip": {
               "operands": [
                 { "name": "dst", "role": "dst", "kind": "sreg" },
                 { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
@@ -864,8 +810,7 @@
                 { "name": "pin0", "role": "pin0", "kind": "pred", "oprnd_flag": ["src_bit_modi"] },
               ],
             },
-            {
-              "key": "x_vxp",
+            "x_vxp": {
               "operands": [
                 { "name": "dst", "role": "dst", "kind": "sreg" },
                 { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
@@ -873,8 +818,7 @@
                 { "name": "pin0", "role": "pin0", "kind": "pred", "oprnd_flag": ["src_bit_modi"] },
               ],
             },
-            {
-              "key": "v_vvp",
+            "v_vvp": {
               "inst_modifiers": ["BoolFM"],
               "operands": [
                 { "name": "dst", "role": "dst", "kind": "vreg" },
@@ -883,8 +827,7 @@
                 { "name": "pin0", "role": "pin0", "kind": "pred", "oprnd_flag": ["src_bit_modi"] },
               ],
             },
-            {
-              "key": "v_viip",
+            "v_viip": {
               "inst_modifiers": ["BoolFM"],
               "operands": [
                 { "name": "dst", "role": "dst", "kind": "vreg" },
@@ -894,8 +837,7 @@
                 { "name": "pin0", "role": "pin0", "kind": "pred", "oprnd_flag": ["src_bit_modi"] },
               ],
             },
-            {
-              "key": "v_vxp",
+            "v_vxp": {
               "inst_modifiers": ["BoolFM"],
               "operands": [
                 { "name": "dst", "role": "dst", "kind": "vreg" },
@@ -904,16 +846,14 @@
                 { "name": "pin0", "role": "pin0", "kind": "pred", "oprnd_flag": ["src_bit_modi"] },
               ],
             },
-          ],
+          },
         },
-        {
-          "key": "hsetp2",
+        "hsetp2": {
           "semantics": {
             "SASS": ["HSETP2"],
           },
-          "forms": [
-            {
-              "key": "pp_vvp",
+          "forms": {
+            "pp_vvp": {
               "operands": [
                 { "name": "pout0", "role": "pout0", "kind": "pred" },
                 { "name": "pout1", "role": "pout1", "kind": "pred" },
@@ -922,8 +862,7 @@
                 { "name": "pin0", "role": "pin0", "kind": "pred", "oprnd_flag": ["src_bit_modi"] },
               ],
             },
-            {
-              "key": "pp_viip",
+            "pp_viip": {
               "operands": [
                 { "name": "pout0", "role": "pout0", "kind": "pred" },
                 { "name": "pout1", "role": "pout1", "kind": "pred" },
@@ -933,8 +872,7 @@
                 { "name": "pin0", "role": "pin0", "kind": "pred", "oprnd_flag": ["src_bit_modi"] },
               ],
             },
-            {
-              "key": "pp_vxp",
+            "pp_vxp": {
               "operands": [
                 { "name": "pout0", "role": "pout0", "kind": "pred" },
                 { "name": "pout1", "role": "pout1", "kind": "pred" },
@@ -943,9 +881,9 @@
                 { "name": "pin0", "role": "pin0", "kind": "pred", "oprnd_flag": ["src_bit_modi"] },
               ],
             },
-          ],
+          },
         },
-      ],
+      },
     },
     "fsf": {
       "semantics": {
@@ -968,29 +906,26 @@
         },
       },
       "inst_modifiers": ["sfu_func"],
-      "forms": [
-        {
-          "key": "v_v",
+      "forms": {
+        "v_v": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi"] },
           ],
         },
-        {
-          "key": "v_x",
+        "v_x": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "sreg", "oprnd_flag": ["src_fp_modi"] },
           ],
         },
-        {
-          "key": "v_i",
+        "v_i": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "imm32" },
           ],
         },
-      ],
+      },
     },
 
     //////////////////////////
@@ -1011,71 +946,63 @@
       },
       "inst_modifiers": ["bound_mode"],
       "fixed_modifiers": ["uniform_datapath"],
-      "forms": [
-        {
-          "key": "vector",
+      "forms": {
+        "vector": {
           "fixed_modi_vals": { "uniform_datapath": "SIMT" },
-          "forms": [
-            {
-              "key": "v_vi",
+          "forms": {
+            "v_vi": {
               "operands": [
                 { "name": "dst", "role": "dst", "kind": "vreg" },
                 { "name": "src0", "role": "src0", "kind": "vreg" },
                 { "name": "src1", "role": "src1", "kind": "imm32" },
               ],
             },
-            {
-              "key": "v_vx",
+            "v_vx": {
               "operands": [
                 { "name": "dst", "role": "dst", "kind": "vreg" },
                 { "name": "src0", "role": "src0", "kind": "vreg" },
                 { "name": "src1", "role": "src1", "kind": "sreg" },
               ],
             },
-            {
-              "key": "v_vv",
+            "v_vv": {
               "operands": [
                 { "name": "dst", "role": "dst", "kind": "vreg" },
                 { "name": "src0", "role": "src0", "kind": "vreg" },
                 { "name": "src1", "role": "src1", "kind": "vreg" },
               ],
             },
-          ],
+          },
         },
-        {
-          "key": "scalar",
+        "scalar": {
           "fixed_modi_vals": { "uniform_datapath": "UNI" },
         },
-      ],
+      },
     },
     "brev": {
       "semantics": {
         "effect": "dst = bit_reverse(src0) (bitwise reverse)",
         "SASS": "BREV",
       },
-      "forms": [
-        {
-          "key": "v_v",
+      "forms": {
+        "v_v": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "vreg" },
           ],
         },
-        {
-          "key": "v_x",
+        "v_x": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "sreg" },
           ],
         },
-        {
-          "key": "v_i",
+        "v_i": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "imm32" },
           ],
         },
-      ],
+      },
     },
     "flo": {
       "semantics": {
@@ -1094,58 +1021,52 @@
         },
       },
       "inst_modifiers": ["shiftamt"],
-      "forms": [
-        {
-          "key": "v_v",
+      "forms": {
+        "v_v": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "vreg" },
           ],
         },
-        {
-          "key": "v_x",
+        "v_x": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "sreg" },
           ],
         },
-        {
-          "key": "v_i",
+        "v_i": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "imm32" },
           ],
         },
-      ],
+      },
     },
     "iabs": {
       "semantics": {
         "effect": "dst = abs(src0) (integer absolute value)",
         "SASS": "IABS",
       },
-      "forms": [
-        {
-          "key": "v_v",
+      "forms": {
+        "v_v": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "vreg" },
           ],
         },
-        {
-          "key": "v_x",
+        "v_x": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "sreg" },
           ],
         },
-        {
-          "key": "v_i",
+        "v_i": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "imm32" },
           ],
         },
-      ],
+      },
     },
     "iadd3": {
       "semantics": {
@@ -1153,9 +1074,8 @@
         "SASS": "IADD3",
       },
       "fixed_modifiers": ["ccin"],
-      "forms": [
-        {
-          "key": "vpp_vvv",
+      "forms": {
+        "vpp_vvv": {
           "fixed_modi_vals": { "ccin": "DISABLE" },
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
@@ -1166,8 +1086,7 @@
             { "name": "src2", "role": "src2", "kind": "vreg", "oprnd_flag": ["src_int_modi"] },
           ],
         },
-        {
-          "key": "vpp_vxv",
+        "vpp_vxv": {
           "fixed_modi_vals": { "ccin": "DISABLE" },
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
@@ -1178,8 +1097,7 @@
             { "name": "src2", "role": "src2", "kind": "vreg", "oprnd_flag": ["src_int_modi"] },
           ],
         },
-        {
-          "key": "vpp_viv",
+        "vpp_viv": {
           "fixed_modi_vals": { "ccin": "DISABLE" },
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
@@ -1190,7 +1108,7 @@
             { "name": "src2", "role": "src2", "kind": "vreg", "oprnd_flag": ["src_int_modi"] },
           ],
         },
-      ],
+      },
     },
     "imad": {
       "semantics": {
@@ -1214,9 +1132,8 @@
       },
       "inst_modifiers": ["is_signed"],
       "fixed_modifiers": ["wide", "ccin"],
-      "forms": [
-        {
-          "key": "v_vvi",
+      "forms": {
+        "v_vvi": {
           "fixed_modi_vals": { "wide": "DISABLE", "ccin": "DISABLE" },
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
@@ -1225,8 +1142,7 @@
             { "name": "src2", "role": "src2", "kind": "imm32" },
           ],
         },
-        {
-          "key": "v_viv",
+        "v_viv": {
           "fixed_modi_vals": { "wide": "DISABLE", "ccin": "DISABLE" },
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
@@ -1235,8 +1151,7 @@
             { "name": "src2", "role": "src2", "kind": "vreg", "oprnd_flag": ["src_int_modi"] },
           ],
         },
-        {
-          "key": "vp_viv_wide",
+        "vp_viv_wide": {
           "fixed_modi_vals": { "wide": "WIDE", "ccin": "DISABLE" },
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
@@ -1246,8 +1161,7 @@
             { "name": "src2", "role": "src2", "kind": "vreg", "oprnd_flag": ["src_int_modi"] },
           ],
         },
-        {
-          "key": "v_vxv",
+        "v_vxv": {
           "fixed_modi_vals": { "wide": "DISABLE", "ccin": "DISABLE" },
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
@@ -1256,8 +1170,7 @@
             { "name": "src2", "role": "src2", "kind": "vreg", "oprnd_flag": ["src_int_modi"] },
           ],
         },
-        {
-          "key": "vp_vxv_wide",
+        "vp_vxv_wide": {
           "fixed_modi_vals": { "wide": "WIDE", "ccin": "DISABLE" },
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
@@ -1267,8 +1180,7 @@
             { "name": "src2", "role": "src2", "kind": "vreg", "oprnd_flag": ["src_int_modi"] },
           ],
         },
-        {
-          "key": "v_vvx",
+        "v_vvx": {
           "fixed_modi_vals": { "wide": "DISABLE", "ccin": "DISABLE" },
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
@@ -1277,8 +1189,7 @@
             { "name": "src2", "role": "src2", "kind": "sreg", "oprnd_flag": ["src_int_modi"] },
           ],
         },
-        {
-          "key": "vp_vvx_wide",
+        "vp_vvx_wide": {
           "fixed_modi_vals": { "wide": "WIDE", "ccin": "DISABLE" },
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
@@ -1288,8 +1199,7 @@
             { "name": "src2", "role": "src2", "kind": "sreg", "oprnd_flag": ["src_int_modi"] },
           ],
         },
-        {
-          "key": "v_vvv",
+        "v_vvv": {
           "fixed_modi_vals": { "wide": "DISABLE", "ccin": "DISABLE" },
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
@@ -1298,8 +1208,7 @@
             { "name": "src2", "role": "src2", "kind": "vreg", "oprnd_flag": ["src_int_modi"] },
           ],
         },
-        {
-          "key": "vp_vvv_wide",
+        "vp_vvv_wide": {
           "fixed_modi_vals": { "wide": "WIDE", "ccin": "DISABLE" },
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
@@ -1309,7 +1218,7 @@
             { "name": "src2", "role": "src2", "kind": "vreg", "oprnd_flag": ["src_int_modi"] },
           ],
         },
-      ],
+      },
     },
     "imnmx": {
       "semantics": {
@@ -1317,9 +1226,8 @@
         "SASS": "IMNMX",
       },
       "inst_modifiers": ["is_signed"],
-      "forms": [
-        {
-          "key": "v_vvp",
+      "forms": {
+        "v_vvp": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "vreg" },
@@ -1327,8 +1235,7 @@
             { "name": "pin0", "role": "pin0", "kind": "pred", "oprnd_flag": ["src_bit_modi"] },
           ],
         },
-        {
-          "key": "v_vip",
+        "v_vip": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "vreg" },
@@ -1336,8 +1243,7 @@
             { "name": "pin0", "role": "pin0", "kind": "pred", "oprnd_flag": ["src_bit_modi"] },
           ],
         },
-        {
-          "key": "v_vxp",
+        "v_vxp": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "vreg" },
@@ -1345,7 +1251,7 @@
             { "name": "pin0", "role": "pin0", "kind": "pred", "oprnd_flag": ["src_bit_modi"] },
           ],
         },
-      ],
+      },
     },
     "icmp": {
       "semantics": {
@@ -1354,9 +1260,8 @@
         "notes": ["TODO: 检查这里的 forms 哪些是需要的"],
       },
       "inst_modifiers": ["int_cmp_type", "pred_comb", "is_signed"],
-      "forms": [
-        {
-          "key": "p_vvp",
+      "forms": {
+        "p_vvp": {
           "operands": [
             { "name": "pout0", "role": "pout0", "kind": "pred" },
             { "name": "src0", "role": "src0", "kind": "vreg" },
@@ -1364,8 +1269,7 @@
             { "name": "pin0", "role": "pin0", "kind": "pred", "oprnd_flag": ["src_bit_modi"] },
           ],
         },
-        {
-          "key": "p_vip",
+        "p_vip": {
           "operands": [
             { "name": "pout0", "role": "pout0", "kind": "pred" },
             { "name": "src0", "role": "src0", "kind": "vreg" },
@@ -1373,8 +1277,7 @@
             { "name": "pin0", "role": "pin0", "kind": "pred", "oprnd_flag": ["src_bit_modi"] },
           ],
         },
-        {
-          "key": "p_vxp",
+        "p_vxp": {
           "operands": [
             { "name": "pout0", "role": "pout0", "kind": "pred" },
             { "name": "src0", "role": "src0", "kind": "vreg" },
@@ -1382,7 +1285,7 @@
             { "name": "pin0", "role": "pin0", "kind": "pred", "oprnd_flag": ["src_bit_modi"] },
           ],
         },
-      ],
+      },
     },
     "shl_add": {
       "semantics": {
@@ -1394,9 +1297,8 @@
         "SASS": "LEA",
       },
       "fixed_modifiers": ["ccin"],
-      "forms": [
-        {
-          "key": "v_vvi",
+      "forms": {
+        "v_vvi": {
           "fixed_modi_vals": { "ccin": "DISABLE" },
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
@@ -1405,8 +1307,7 @@
             { "name": "src2", "role": "src2", "kind": "imm5" },
           ],
         },
-        {
-          "key": "v_vvip",
+        "v_vvip": {
           "fixed_modi_vals": { "ccin": "CCIN" },
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
@@ -1416,8 +1317,7 @@
             { "name": "pin0", "role": "pin0", "kind": "pred", "oprnd_flag": ["src_bit_modi"] },
           ],
         },
-        {
-          "key": "vp_vvi",
+        "vp_vvi": {
           "fixed_modi_vals": { "ccin": "DISABLE" },
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
@@ -1427,8 +1327,7 @@
             { "name": "src2", "role": "src2", "kind": "imm5" },
           ],
         },
-        {
-          "key": "vp_vvip",
+        "vp_vvip": {
           "fixed_modi_vals": { "ccin": "CCIN" },
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
@@ -1439,8 +1338,7 @@
             { "name": "pin0", "role": "pin0", "kind": "pred", "oprnd_flag": ["src_bit_modi"] },
           ],
         },
-        {
-          "key": "v_vxi",
+        "v_vxi": {
           "fixed_modi_vals": { "ccin": "DISABLE" },
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
@@ -1449,8 +1347,7 @@
             { "name": "src2", "role": "src2", "kind": "imm5" },
           ],
         },
-        {
-          "key": "v_vxip",
+        "v_vxip": {
           "fixed_modi_vals": { "ccin": "CCIN" },
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
@@ -1460,8 +1357,7 @@
             { "name": "pin0", "role": "pin0", "kind": "pred", "oprnd_flag": ["src_bit_modi"] },
           ],
         },
-        {
-          "key": "vp_vxi",
+        "vp_vxi": {
           "fixed_modi_vals": { "ccin": "DISABLE" },
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
@@ -1471,8 +1367,7 @@
             { "name": "src2", "role": "src2", "kind": "imm5" },
           ],
         },
-        {
-          "key": "vp_vxip",
+        "vp_vxip": {
           "fixed_modi_vals": { "ccin": "CCIN" },
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
@@ -1483,16 +1378,15 @@
             { "name": "pin0", "role": "pin0", "kind": "pred", "oprnd_flag": ["src_bit_modi"] },
           ],
         },
-      ],
+      },
     },
     "lop3": {
       "semantics": {
         "effect": "dst = lop3(src0, src1, src2, imm8)",
         "SASS": "LOP3",
       },
-      "forms": [
-        {
-          "key": "v_vvvi",
+      "forms": {
+        "v_vvvi": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "vreg" },
@@ -1501,8 +1395,7 @@
             { "name": "imm8", "role": "src3", "kind": "imm8" },
           ],
         },
-        {
-          "key": "v_vxvi",
+        "v_vxvi": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "vreg" },
@@ -1511,8 +1404,7 @@
             { "name": "imm8", "role": "src3", "kind": "imm8" },
           ],
         },
-        {
-          "key": "v_vivi",
+        "v_vivi": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "vreg" },
@@ -1521,29 +1413,27 @@
             { "name": "imm8", "role": "src3", "kind": "imm8" },
           ],
         },
-      ],
+      },
     },
     "popc": {
       "semantics": {
         "effect": "Count the number of one bits in a and place the resulting population count in 32-bit destination register d",
         "SASS": "POPC",
       },
-      "forms": [
-        {
-          "key": "v_v",
+      "forms": {
+        "v_v": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_bit_modi"] },
           ],
         },
-        {
-          "key": "v_x",
+        "v_x": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "sreg", "oprnd_flag": ["src_bit_modi"] },
           ],
         },
-      ],
+      },
     },
 
     /////////////////////////////
@@ -1572,22 +1462,20 @@
         },
       },
       "inst_modifiers": ["rnd_mode_fp", "ftz", "satfinite", "dst_fp_type", "src_fp_type"],
-      "forms": [
-        {
-          "key": "v_v",
+      "forms": {
+        "v_v": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg", "oprnd_flag": ["opsel"] },
             { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["opsel", "src_fp_modi"] },
           ],
         },
-        {
-          "key": "v_x",
+        "v_x": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg", "oprnd_flag": ["opsel"] },
             { "name": "src0", "role": "src0", "kind": "sreg", "oprnd_flag": ["opsel", "src_fp_modi"] },
           ],
         },
-      ],
+      },
     },
     "f2i": {
       "semantics": {
@@ -1611,22 +1499,20 @@
         },
       },
       "inst_modifiers": ["rnd_mode_int", "ftz", "saturate", "dst_int_type", "src_fp_type"],
-      "forms": [
-        {
-          "key": "v_v",
+      "forms": {
+        "v_v": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg", "oprnd_flag": ["opsel"] },
             { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["opsel", "src_fp_modi"] },
           ],
         },
-        {
-          "key": "v_x",
+        "v_x": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg", "oprnd_flag": ["opsel"] },
             { "name": "src0", "role": "src0", "kind": "sreg", "oprnd_flag": ["opsel", "src_fp_modi"] },
           ],
         },
-      ],
+      },
     },
     "i2f": {
       "semantics": {
@@ -1650,15 +1536,14 @@
         },
       },
       "inst_modifiers": ["rnd_mode_fp", "ftz", "saturate", "dst_fp_type", "src_int_type"],
-      "forms": [
-        {
-          "key": "v_v",
+      "forms": {
+        "v_v": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg", "oprnd_flag": ["opsel"] },
             { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["opsel", "src_int_modi"] },
           ],
         },
-      ],
+      },
     },
     "i2i": {
       "semantics": {
@@ -1679,22 +1564,20 @@
         },
       },
       "inst_modifiers": ["saturate", "dst_int_type", "src_int_type"],
-      "forms": [
-        {
-          "key": "v_v",
+      "forms": {
+        "v_v": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg", "oprnd_flag": ["opsel"] },
             { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_int_modi"] },
           ],
         },
-        {
-          "key": "v_x",
+        "v_x": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg", "oprnd_flag": ["opsel"] },
             { "name": "src0", "role": "src0", "kind": "sreg", "oprnd_flag": ["src_int_modi"] },
           ],
         },
-      ],
+      },
     },
     "frnd": {
       "semantics": {
@@ -1709,29 +1592,26 @@
         },
       },
       "inst_modifiers": ["rnd_mode_int", "fp_type_FRND", "ftz"],
-      "forms": [
-        {
-          "key": "v_v",
+      "forms": {
+        "v_v": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi"] },
           ],
         },
-        {
-          "key": "v_x",
+        "v_x": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "sreg", "oprnd_flag": ["src_fp_modi"] },
           ],
         },
-        {
-          "key": "v_i",
+        "v_i": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "imm32" },
           ],
         },
-      ],
+      },
     },
 
     ///////////////////////////
@@ -1742,29 +1622,26 @@
         "effect": "dst = src0",
         "SASS": "MOV",
       },
-      "forms": [
-        {
-          "key": "v_v",
+      "forms": {
+        "v_v": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "vreg" },
           ],
         },
-        {
-          "key": "v_x",
+        "v_x": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "sreg" },
           ],
         },
-        {
-          "key": "v_i",
+        "v_i": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "imm32" },
           ],
         },
-      ],
+      },
     },
     "prmt": {
       "semantics": {
@@ -1779,9 +1656,8 @@
         },
       },
       "inst_modifiers": ["prmt_mode"],
-      "forms": [
-        {
-          "key": "v_vvi",
+      "forms": {
+        "v_vvi": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "vreg" },
@@ -1789,8 +1665,7 @@
             { "name": "src2", "role": "src2", "kind": "imm32" },
           ],
         },
-        {
-          "key": "v_viv",
+        "v_viv": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "vreg" },
@@ -1798,8 +1673,7 @@
             { "name": "src2", "role": "src2", "kind": "vreg" },
           ],
         },
-        {
-          "key": "v_vxv",
+        "v_vxv": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "vreg" },
@@ -1807,8 +1681,7 @@
             { "name": "src2", "role": "src2", "kind": "vreg" },
           ],
         },
-        {
-          "key": "v_vvx",
+        "v_vvx": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "vreg" },
@@ -1816,8 +1689,7 @@
             { "name": "src2", "role": "src2", "kind": "sreg" },
           ],
         },
-        {
-          "key": "v_vvv",
+        "v_vvv": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "vreg" },
@@ -1825,16 +1697,15 @@
             { "name": "src2", "role": "src2", "kind": "vreg" },
           ],
         },
-      ],
+      },
     },
     "sel": {
       "semantics": {
         "effect": "dst = (pin0) ? src0 : src1",
         "SASS": "SEL",
       },
-      "forms": [
-        {
-          "key": "v_vvp",
+      "forms": {
+        "v_vvp": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "vreg" },
@@ -1842,8 +1713,7 @@
             { "name": "pin0", "role": "pin0", "kind": "pred", "oprnd_flag": ["src_bit_modi"] },
           ],
         },
-        {
-          "key": "v_vxp",
+        "v_vxp": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "vreg" },
@@ -1851,8 +1721,7 @@
             { "name": "pin0", "role": "pin0", "kind": "pred", "oprnd_flag": ["src_bit_modi"] },
           ],
         },
-        {
-          "key": "v_vip",
+        "v_vip": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "vreg" },
@@ -1860,7 +1729,7 @@
             { "name": "pin0", "role": "pin0", "kind": "pred", "oprnd_flag": ["src_bit_modi"] },
           ],
         },
-      ],
+      },
     },
 
     /////////////////////////////
@@ -1872,9 +1741,8 @@
         "notes": ["offset 与 saddr 正好凑成 32 bit encoding"],
       },
       "inst_modifiers": ["ldst_length", "consistency_scope", "mem_scope", "cache_policy"],
-      "forms": [
-        {
-          "key": "ur+r+imm",
+      "forms": {
+        "ur+r+imm": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "vaddr", "role": "src0", "kind": "vreg" },
@@ -1882,16 +1750,15 @@
             { "name": "offset", "role": "src2", "kind": "imm24" },
           ],
         },
-      ],
+      },
     },
     "ST": {
       "semantics": {
         "effect": "Store to generic memory",
       },
       "inst_modifiers": ["ldst_length", "consistency_scope", "mem_scope", "cache_policy"],
-      "forms": [
-        {
-          "key": "ur+r+imm",
+      "forms": {
+        "ur+r+imm": {
           "operands": [
             { "name": "vaddr", "role": "src0", "kind": "vreg" },
             { "name": "saddr", "role": "src1", "kind": "sreg" },
@@ -1899,16 +1766,15 @@
             { "name": "data", "role": "src3", "kind": "vreg" },
           ],
         },
-      ],
+      },
     },
     "LDC": {
       "semantics": {
         "effect": "Load from constant memory",
       },
       "inst_modifiers": ["ldst_length"],
-      "forms": [
-        {
-          "key": "cx[ur][r+imm]",
+      "forms": {
+        "cx[ur][r+imm]": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "vaddr", "role": "src0", "kind": "vreg" },
@@ -1916,8 +1782,7 @@
             { "name": "offset", "role": "src2", "kind": "imm16" },
           ],
         },
-        {
-          "key": "cx[imm5][r+imm16]",
+        "cx[imm5][r+imm16]": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "const_bank", "role": "src0", "kind": "imm5" },
@@ -1925,7 +1790,7 @@
             { "name": "offset", "role": "src2", "kind": "imm16" },
           ],
         },
-      ],
+      },
     },
 
     ////////////////////////////////
@@ -1936,12 +1801,11 @@
         "effect": "no operation",
         "SASS": "NOP",
       },
-      "forms": [
-        {
-          "key": "nop",
+      "forms": {
+        "nop": {
           "operands": [],
         },
-      ],
+      },
     },
 
     /////////////////////////////
@@ -1958,23 +1822,21 @@
           "meaning": "Type of vote operation.",
         },
       },
-      "forms": [
-        {
-          "key": "p_p",
+      "forms": {
+        "p_p": {
           "operands": [
             { "name": "pout0", "role": "pout0", "kind": "pred" },
             { "name": "pin0", "role": "pin0", "kind": "pred", "oprnd_flag": ["src_bit_modi"] },
           ],
         },
-        {
-          "key": "vp_p",
+        "vp_p": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "pout0", "role": "pout0", "kind": "pred" },
             { "name": "pin0", "role": "pin0", "kind": "pred", "oprnd_flag": ["src_bit_modi"] },
           ],
         },
-      ],
+      },
     },
     "match": {
       "semantics": {
@@ -1989,23 +1851,21 @@
         },
       },
       "inst_modifiers": ["U64"],
-      "forms": [
-        {
-          "key": "all.vp_v",
+      "forms": {
+        "all.vp_v": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "pout0", "role": "pout0", "kind": "pred" },
             { "name": "src0", "role": "src0", "kind": "vreg" },
           ],
         },
-        {
-          "key": "any.v_v",
+        "any.v_v": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "vreg" },
           ],
         },
-      ],
+      },
     },
     "shfl": {
       "semantics": {
@@ -2028,9 +1888,8 @@
         },
       },
       "inst_modifiers": ["shfl_mode"],
-      "forms": [
-        {
-          "key": "vp_vvi",
+      "forms": {
+        "vp_vvi": {
           "operands": [
             { "name": "pout", "role": "pout0", "kind": "pred" },
             { "name": "dst", "role": "dst", "kind": "vreg" },
@@ -2039,8 +1898,7 @@
             { "name": "src2", "role": "src2", "kind": "imm12" },
           ],
         },
-        {
-          "key": "vp_viv",
+        "vp_viv": {
           "operands": [
             { "name": "pout", "role": "pout0", "kind": "pred" },
             { "name": "dst", "role": "dst", "kind": "vreg" },
@@ -2049,8 +1907,7 @@
             { "name": "src2", "role": "src2", "kind": "vreg" },
           ],
         },
-        {
-          "key": "vp_vii",
+        "vp_vii": {
           "operands": [
             { "name": "pout", "role": "pout0", "kind": "pred" },
             { "name": "dst", "role": "dst", "kind": "vreg" },
@@ -2059,8 +1916,7 @@
             { "name": "src2", "role": "src2", "kind": "imm12" },
           ],
         },
-        {
-          "key": "vp_vvv",
+        "vp_vvv": {
           "operands": [
             { "name": "pout", "role": "pout0", "kind": "pred" },
             { "name": "dst", "role": "dst", "kind": "vreg" },
@@ -2069,7 +1925,7 @@
             { "name": "src2", "role": "src2", "kind": "vreg" },
           ],
         },
-      ],
+      },
     },
     ///////////////////////////////////
     /* Uniform Datapath Instructions */

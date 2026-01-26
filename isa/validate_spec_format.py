@@ -411,15 +411,13 @@ def validate_forms_list(
     ancestor_operands,
     ancestor_local_mods,
 ):
-    if not ensure_list(forms, path, errors):
+    if not ensure_dict(forms, path, errors):
         return
-    keys_seen = set()
-    for idx, form in enumerate(forms):
-        form_path = path_index(path, idx)
+    for form_key, form in forms.items():
+        form_path = path_key(path, form_key)
         if not ensure_dict(form, form_path, errors):
             continue
         allowed = {
-            "key",
             "semantics",
             "fixed_modi_vals",
             "local_modifier_defs",
@@ -431,19 +429,6 @@ def validate_forms_list(
         for key in form:
             if key not in allowed:
                 add_error(errors, path_key(form_path, key), "unexpected field")
-        if "key" not in form:
-            add_error(errors, form_path, "missing required field 'key'")
-        form_key = form.get("key")
-        if isinstance(form_key, str):
-            if form_key in keys_seen:
-                add_error(
-                    errors,
-                    path_key(form_path, "key"),
-                    f"duplicate form key '{form_key}'",
-                )
-            keys_seen.add(form_key)
-        elif form_key is not None:
-            add_error(errors, path_key(form_path, "key"), "expected string")
         if "semantics" in form:
             validate_semantics(
                 form["semantics"], path_key(form_path, "semantics"), errors
@@ -514,7 +499,7 @@ def validate_forms_list(
                     f"unknown modifier '{name}'",
                 )
         if fixed_mods and "forms" not in form:
-            add_error(errors, form_path, "fixed_modifiers requires child forms list")
+            add_error(errors, form_path, "fixed_modifiers requires child forms object")
         if required_fixed_defs:
             if "fixed_modi_vals" not in form:
                 add_error(errors, form_path, "missing required field 'fixed_modi_vals'")
