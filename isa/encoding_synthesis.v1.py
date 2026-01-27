@@ -129,22 +129,40 @@ def update_max_count(counts: list[int], depth: int, count: int) -> None:
         counts[depth] = count
 
 
+def iter_forms(forms_obj):
+    if forms_obj is None:
+        return []
+    if isinstance(forms_obj, dict):
+        return list(forms_obj.items())
+    if isinstance(forms_obj, list):
+        items = []
+        for form in forms_obj:
+            key = form.get("key")
+            if key is None:
+                raise ValueError("form missing key")
+            items.append((key, form))
+        return items
+    raise ValueError("forms must be object or list")
+
+
 def collect_form_counts(instructions: dict) -> list[int]:
     counts: list[int] = []
     for inst in instructions.values():
-        forms = inst.get("forms", [])
-        update_max_count(counts, 0, len(forms))
-        for form in forms:
+        forms = inst.get("forms", {})
+        items = iter_forms(forms)
+        update_max_count(counts, 0, len(items))
+        for _, form in items:
             collect_form_counts_rec(form, 1, counts)
     return counts
 
 
 def collect_form_counts_rec(form: dict, depth: int, counts: list[int]) -> None:
     child_forms = form.get("forms")
-    if not child_forms:
+    items = iter_forms(child_forms)
+    if not items:
         return
-    update_max_count(counts, depth, len(child_forms))
-    for child in child_forms:
+    update_max_count(counts, depth, len(items))
+    for _, child in items:
         collect_form_counts_rec(child, depth + 1, counts)
 
 
@@ -259,10 +277,10 @@ def synthesize_encodings(spec: dict) -> dict:
 
         inst_modifiers = list(inst.get("inst_modifiers", []))
         inst_fixed_mods = list(inst.get("fixed_modifiers", []))
-        forms = inst.get("forms", [])
+        forms = inst.get("forms", {})
 
         def walk_forms(
-            forms_list: list,
+            forms_obj,
             form_path: list[str],
             form_indices: list[int],
             operands: list[dict],
@@ -270,8 +288,9 @@ def synthesize_encodings(spec: dict) -> dict:
             mod_defs: dict,
             parent_fixed_mods: list[str],
         ) -> None:
-            for idx, form in enumerate(forms_list):
-                new_form_path = form_path + [form.get("key")]
+            items = iter_forms(forms_obj)
+            for idx, (form_key, form) in enumerate(items):
+                new_form_path = form_path + [form_key]
                 new_form_indices = form_indices + [idx]
 
                 new_operands = operands + list(form.get("operands", []))
