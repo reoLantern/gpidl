@@ -731,11 +731,13 @@
 <h1>NVN Constant Buffer Accesses</h1>
 
 The following section will describe how to interpret constant buffer accesses,
-such as uniform references, in the SASS dump.<br><br>
+such as uniform references, in the SASS dump.<br>
+本节说明如何在 SASS dump 中解释 constant buffer 访问，例如 uniform 引用。<br><br>
 
 Assembly instructions may fetch
 values from a bound constant buffer in arithmetic or general load instructions.
-For example, the instruction:
+For example, the instruction:<br>
+Assembly instructions 可以在算术或一般 load 指令中从绑定的 constant buffer 取值。比如下面的指令:
 
 <pre>
             MOV             R4, c[0xa][0x0];                              # [000128]
@@ -752,10 +754,11 @@ implementation for various purposes: internal data, such as driver-managed
 constants, shader constants, non-uniform buffer uniform data, or other non-user
 data.  14 banks are reserved for backing user-defined uniform buffers in the
 shaders, and these banks start with constant bank "c[0x3]".
-<br><br>
+<br>
+该指令把数据从 constant buffer 移到寄存器 R4。反汇编指令中对 constant buffer memory 的引用形式为 "c[A][B]"，其中 "c" 表示 GPU hardware 中的 constant buffer 引用。第一个索引（上例中的 "[0xa]"）表示指令从哪个 constant bank（buffer binding）读取。第二个索引（上例中的 "[0x0]"）是该 bank 内的 byte offset。每个 shader stage 一共有 18 个 constant bank。编译器和 NVN implementation 预留了 4 个 bank，用于各种用途：internal data，如 driver-managed constants、shader constants、non-uniform buffer uniform data 或其他 non-user data。其余 14 个 bank 用于承载 shaders 中 user-defined uniform buffers，这些 bank 从 constant bank "c[0x3]" 开始。<br><br>
 
-The following table illustrates the constant bank layout:
-<br><br>
+The following table illustrates the constant bank layout:<br>
+下表展示 constant bank 布局：<br><br>
 
 <table>
 <tbody>
@@ -772,6 +775,8 @@ The following table illustrates the constant bank layout:
 Note that the layout described in this section details binaries of GLSLC GPU code
 major version 1.  If a new GPU code major version format is introduced, these
 layouts might change, but that would indicate a backwards incompatible break.
+<br>
+注意，本节描述的布局针对 GLSLC GPU code major version 1 的二进制。若引入新的 GPU code major version 格式，这些布局可能变化，但那将意味着向后不兼容的 break。<br><br>
 
 <h2>Reserved Driver-Managed Constants</h2>
 
@@ -781,12 +786,14 @@ that needs to be fetched by compiler-generated shader code implementing various
 NVN API features.  Among the data stored in this constant buffer are 16-byte descriptors
 for shader storage blocks, which are programmed via
 nvn::CommandBuffer::BindStorageBuffer.
-<br><br>
+<br>
+NVN driver 将一个 internal constant buffer 绑定到硬件 constant bank #0，用来保存 driver-managed constant data。该 constant buffer 保存 API state，需要被编译器生成的 shader code 读取以实现各种 NVN API 功能。该 constant buffer 中包含用于 shader storage blocks 的 16-byte descriptors，这些通过 nvn::CommandBuffer::BindStorageBuffer 进行编程。<br><br>
 
 For graphics shaders, this internal constant buffer is shared by all shader
 stages.  The shader storage block bindings for each shader stage can be found
 in the following locations:
-<br><br>
+<br>
+对于 graphics shaders，这个 internal constant buffer 在所有 shader stages 之间共享。每个 shader stage 的 shader storage block bindings 位于以下位置：<br><br>
 
 <table>
 <tbody>
@@ -810,7 +817,8 @@ buffer bindings #5 through #13 are fetched from the internal constant buffer
 bindings crosses the boundary between bindings #4 and #5 and an access to that
 array uses a non-constant buffer index, that access will use the internal
 constant buffer, regardless of the actual index.
-<br><br>
+<br>
+compute shaders 使用一个独立的 internal constant buffer。除了存储 shader storage block bindings，这个 constant buffer 还保存 compute shader uniform buffer bindings 的 16-byte descriptors。Tegra X1 compute shader hardware 只支持 8 个 total constant buffer bindings。uniform buffer bindings #0 到 #4 直接映射到 "c[0x3]" 到 "c[0x7]"，而 bindings #5 到 #13 从 internal constant buffer "c[0x0]" 获取，并通过 global loads 进行 emulated。如果某个 uniform buffer bindings 的数组跨过 #4 与 #5 的边界，并且访问使用 non-constant buffer index，那么该访问将使用 internal constant buffer，而不管实际 index。<br><br>
 
 <table>
 <tbody>
@@ -825,6 +833,8 @@ constant buffer, regardless of the actual index.
 
 GLSL shaders used by NVN can include sampler or image uniforms associated with API
 binding points which are not stored in user-defined uniform blocks.  For example:
+<br>
+NVN 使用的 GLSL shaders 可以包含与 API binding points 关联的 sampler 或 image uniforms，这些不存储在 user-defined uniform blocks 中。例如：
 
 <pre>
             layout(binding=4) uniform sampler2D smp;
@@ -837,9 +847,11 @@ per-stage internal constant buffer bound to hardware constant bank #2
 ("c[0x2]") at a pre-defined fixed offset based on the assigned binding for each
 uniform in the shader.  Samplers, separate textures/samplers, and images are represented
 as 8 byte entries per binding.
-<br><br>
+<br>
+这声明了变量 _smp_，它与 shader stage 的 API binding point #4 关联。不同于 OpenGL，NVN 为每个 shader stage 使用独立的 API binding points。这些 binding points 使用的 handles 存储在按 stage 的 internal constant buffer 中，该 buffer 绑定到硬件 constant bank #2（"c[0x2]"），并按 shader 中每个 uniform 的 assigned binding 使用预定义的固定偏移。samplers、separate textures/samplers 和 images 以每个 binding 8 byte entries 表示。<br><br>
 
-The layout of bank c[0x2] is defined as follows:
+The layout of bank c[0x2] is defined as follows:<br>
+bank c[0x2] 的布局定义如下：
 
 <table>
 <tbody>
@@ -861,6 +873,8 @@ instead of making explicit references to "c[0x2]"; the hardware is already
 programmed to reference constant bank #2 for pulling descriptors for these
 types of instructions, and the compiler might choose to optimize out
 intermediate loads from this constant bank.  For example, in the instruction
+<br>
+注意，使用 bound resource uniforms 的 texture 和 image 指令在 assembly 中可能表现为引用 4-byte immediate integer offsets 的指令，而不是显式引用 "c[0x2]"；硬件已经被设置为对这类指令从 constant bank #2 拉取 descriptors，编译器也可能选择优化掉从该 constant bank 的中间 loads。例如，在下面指令中：
 
 <pre>
 	     TEXS.NODEP.P    R2, R0, R4, R4, 0xe, 2D, RGBA;                # [000010]
@@ -870,10 +884,13 @@ the "0xe" (14) indicates that the hardware will fetch the texture or image
 descriptor at an offset of 14*4 = 56 bytes from the beginning of the bound
 resource uniform constant buffer.  That would refer to combined texture/sampler
 binding #3.
-<br><br>
+<br>
+其中 "0xe" (14) 表示硬件将从 bound resource uniform constant buffer 开头偏移 14*4 = 56 bytes 处获取 texture 或 image descriptor。这对应 combined texture/sampler binding #3。<br><br>
 
 Also note that while samplers and images are represented as 8-byte values, generated
 shader code may fetch bindings using 4-byte loads.
+<br>
+还要注意，虽然 samplers 和 images 以 8-byte 值表示，但生成的 shader code 可能使用 4-byte loads 来获取 bindings。<br><br>
 
 <h2>Uniform Buffer Bindings</h2>
 
@@ -882,7 +899,8 @@ bank.  For example, "c[0xa][0x0]" maps to the first byte of the uniform buffer
 binding #7 in the shader.  If the user had defined a uniform bank in a GLSL
 shader with "layout(binding = 3)", then SASS instructions referencing that
 uniform buffer would contain "c[0x6]".
-<br><br>
+<br>
+shader stage 中每个 uniform buffer binding 对应一个 constant bank。比如，"c[0xa][0x0]" 映射到 shader 中 uniform buffer binding #7 的第一个 byte。如果用户在 GLSL shader 中用 "layout(binding = 3)" 定义了一个 uniform bank，那么引用该 uniform buffer 的 SASS 指令会包含 "c[0x6]"。<br><br>
 
 In order to determine byte offsets of members of a uniform block, developers
 will need to know the layout of the uniform block's data or use GLSLC reflection
@@ -895,7 +913,8 @@ to use GLSLC's reflection section to get the
 byte offsets for the desired uniforms.  Byte offsets in the reflection section
 for uniform buffer uniforms map directly to the byte offsets into the corresponding
 constant bank.
-<br><br>
+<br>
+为了确定 uniform block 成员的 byte offsets，开发者需要了解 uniform block 数据的布局，或使用 GLSLC reflection 信息查询 offsets。使用 std140 或 std430 布局的 uniform buffers 具有明确的预定义 uniform block 数据格式。未使用这些固定布局的 uniform buffer 会由编译器分配 implementation-dependent 布局。在未使用 std140 或 std430 的情况下，开发者将 shader 中的 uniform buffer uniforms 映射到 constant bank 内 byte offsets 时，需要使用 GLSLC 的 reflection section 获取所需 uniforms 的 byte offsets。reflection section 中 uniform buffer uniforms 的 byte offsets 直接对应到相应 constant bank 内的 byte offsets。<br><br>
 
 <h1> Vertex Attributes and Varyings</h1>
 
@@ -903,6 +922,8 @@ When passing inputs and outputs between graphics shader stages, instructions
 refer to an attribute by a canonical "address" of the form "a[addr]", where
 _addr_ is a byte offset into a logical structure containing all possible
 attributes.  For example:
+<br>
+在 graphics shader stages 之间传递 inputs 和 outputs 时，指令通过形如 "a[addr]" 的规范化 "address" 引用一个 attribute，其中 _addr_ 是包含所有 possible attributes 的逻辑结构内的 byte offset。例如：
 
 <pre>
             IPA             R5, a[0x80], R4;                              # [0001b8] ATTR0
@@ -914,6 +935,8 @@ attributes.  For example:
 interpolates (IPA) the four components of generic vector attribute 0, which
 has byte offsets in the range [0x80, 0x8F].  In GLSL shaders, a layout
 qualifier like:
+<br>
+这会对 generic vector attribute 0 的四个分量进行插值 (IPA)，其 byte offsets 位于 [0x80, 0x8F]。在 GLSL shaders 中，类似这样的 layout qualifier：
 
 <pre>
             layout(location=4) in vec4 value;
@@ -921,19 +944,22 @@ qualifier like:
 
 will associate _value_ with generic vector attribute 4, which has an associated
 offset of 0xC0.
-<br><br>
+<br>
+会将 _value_ 关联到 generic vector attribute 4，其对应 offset 为 0xC0。<br><br>
 
 The interface supports 32 generic vectors with offsets in the range [0x80,
 0x27F].  The interface also supports various fixed-function attributes.  For
 instructions using attributes, as in the example above, comments in the
 disassembled instructions identify the attributes accessed.
-<br><br>
+<br>
+该接口支持 32 个 generic vectors，offsets 范围为 [0x80, 0x27F]。该接口也支持多种 fixed-function attributes。对于使用 attributes 的指令（如上例），反汇编指令中的注释会标识所访问的 attributes。<br><br>
 
 Note that these "byte offsets" are not actually used as offsets in memory; they
 are rather treated as canonical attribute numbers.  Tegra X1 hardware optimizes
 attribute passing so that unused or "dead" attributes are not passed between
 stages and do not consume storage or memory bandwidth.
-<br><br>
+<br>
+注意，这些 "byte offsets" 实际上并不作为内存中的 offsets 使用；它们被当作规范化的 attribute numbers。Tegra X1 hardware 会优化 attribute 传递，使未使用或 "dead" 的 attributes 不会在 stages 间传递，从而不占用存储或内存带宽。<br><br>
 
 
 <h2>Quick Links</h2>

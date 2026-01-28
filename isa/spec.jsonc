@@ -56,12 +56,6 @@
   },
 
   "global_modifier_defs": {
-    "uniform_datapath": {
-      "bits": 1,
-      "enum": { "SIMT": 0, "UNI": 1 },
-      "default": "SIMT",
-      "meaning": "Indicate whether the instruction uses the uniform datapath (scalar operation).",
-    },
     "rnd_mode_fp": {
       "bits": 2,
       "enum": {
@@ -174,6 +168,11 @@
       "default": "DISABLE",
       "meaning": "If enabled, finite-saturate the result based on destination format rules (e.g. clamp to MAX_NORM for tiny formats; preserve NaN as format NaN for formats that support it).",
     },
+    "mn_mx": {
+      "bits": 1,
+      "enum": { "MIN": 0, "MAX": 1 },
+      "meaning": "Select whether the instruction computes minimum (MIN) or maximum (MAX).",
+    },
     "NaN": {
       // TODO
       "bits": 1,
@@ -231,6 +230,15 @@
       // TODO: 有待修正
       "enum": ["ca", "cg", "cs"],
       "meaning": "Select the cache policy for the load/store operation.",
+    },
+    "shiftamt": {
+      "bits": 1,
+      "enum": {
+        "NO_SHIFT": 0,
+        "shiftamt": 1,
+      },
+      "default": "NO_SHIFT",
+      "meaning": "When set, FLO.shiftamt returns (31 - normal FLO), equivalent to count leading zeros from MSB.",
     },
   },
 
@@ -442,7 +450,7 @@
     },
     "fmnmx": {
       "semantics": {
-        "effect": "d = pred_operand ? min(a,b) : max(a,b)",
+        "effect": "d = (mn_mx == MIN) ? min(a,b) : max(a,b)",
         "SASS": "FMNMX",
         "notes": ["FP32 min/max with predicate"],
       },
@@ -453,131 +461,119 @@
           "meaning": "Select the floating-point data type for the operation. FP16 is 16 bits within a 32-bit register, selected via opsel.",
         },
       },
-      "inst_modifiers": ["NaN"],
+      "inst_modifiers": ["NaN", "mn_mx"],
       "fixed_modifiers": ["fp_type"],
       "forms": {
-        "v_vvp": {
+        "v_vv": {
           "fixed_modi_vals": { "fp_type": "FP32" },
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi"] },
             { "name": "src1", "role": "src1", "kind": "vreg", "oprnd_flag": ["src_fp_modi"] },
-            { "name": "pin0", "role": "pin0", "kind": "pred", "oprnd_flag": ["src_bit_modi"] },
           ],
         },
-        "v_vip": {
+        "v_vi": {
           "fixed_modi_vals": { "fp_type": "FP32" },
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi"] },
             { "name": "src1", "role": "src1", "kind": "imm32" },
-            { "name": "pin0", "role": "pin0", "kind": "pred", "oprnd_flag": ["src_bit_modi"] },
           ],
         },
-        "v_vxp": {
+        "v_vx": {
           "fixed_modi_vals": { "fp_type": "FP32" },
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi"] },
             { "name": "src1", "role": "src1", "kind": "sreg", "oprnd_flag": ["src_fp_modi"] },
-            { "name": "pin0", "role": "pin0", "kind": "pred", "oprnd_flag": ["src_bit_modi"] },
           ],
         },
-        "f16.v_vvp": {
+        "f16.v_vv": {
           "fixed_modi_vals": { "fp_type": "FP16" },
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "opsel"] },
             { "name": "src1", "role": "src1", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "opsel"] },
-            { "name": "pin0", "role": "pin0", "kind": "pred", "oprnd_flag": ["src_bit_modi"] },
           ],
         },
-        "f16.v_vip": {
+        "f16.v_vi": {
           "fixed_modi_vals": { "fp_type": "FP16" },
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "opsel"] },
             { "name": "src1", "role": "src1", "kind": "imm16" },
-            { "name": "pin0", "role": "pin0", "kind": "pred", "oprnd_flag": ["src_bit_modi"] },
           ],
         },
-        "f16.v_vxp": {
+        "f16.v_vx": {
           "fixed_modi_vals": { "fp_type": "FP16" },
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "opsel"] },
             { "name": "src1", "role": "src1", "kind": "sreg", "oprnd_flag": ["src_fp_modi", "opsel"] },
-            { "name": "pin0", "role": "pin0", "kind": "pred", "oprnd_flag": ["src_bit_modi"] },
           ],
         },
       },
     },
     "fmnmx3": {
       "semantics": {
-        "effect": "d = pred_operand ? min(a,b,c) : max(a,b,c);",
+        "effect": "d = (mn_mx == MIN) ? min(a,b,c) : max(a,b,c);",
         "SASS": "FMNMX3",
         "notes": ["FP32 3-operand min/max with predicate"],
       },
-      "inst_modifiers": ["NaN"],
+      "inst_modifiers": ["NaN", "mn_mx"],
       "forms": {
-        "v_vvvp": {
+        "v_vvv": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi"] },
             { "name": "src1", "role": "src1", "kind": "vreg", "oprnd_flag": ["src_fp_modi"] },
             { "name": "src2", "role": "src2", "kind": "vreg", "oprnd_flag": ["src_fp_modi"] },
-            { "name": "pin0", "role": "pin0", "kind": "pred", "oprnd_flag": ["src_bit_modi"] },
           ],
         },
-        "v_vvip": {
+        "v_vvi": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi"] },
             { "name": "src1", "role": "src1", "kind": "vreg", "oprnd_flag": ["src_fp_modi"] },
             { "name": "src2", "role": "src2", "kind": "imm32" },
-            { "name": "pin0", "role": "pin0", "kind": "pred", "oprnd_flag": ["src_bit_modi"] },
           ],
         },
-        "v_vvxp": {
+        "v_vvx": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi"] },
             { "name": "src1", "role": "src1", "kind": "vreg", "oprnd_flag": ["src_fp_modi"] },
             { "name": "src2", "role": "src2", "kind": "sreg", "oprnd_flag": ["src_fp_modi"] },
-            { "name": "pin0", "role": "pin0", "kind": "pred", "oprnd_flag": ["src_bit_modi"] },
           ],
         },
       },
     },
     "hmnmx_pk": {
       "semantics": {
-        "effect": "dst = pack_mul(src0, src1) (floating-point packed multiplication)",
+        "effect": "dst = pack_mnmx(src0, src1)",
         "SASS": "HMNMX2",
       },
-      "inst_modifiers": ["ftz", "fmz", "saturate", "type_fp16_bf16", "xorsign", "NaN"],
+      "inst_modifiers": ["ftz", "fmz", "saturate", "type_fp16_bf16", "xorsign", "NaN", "mn_mx"],
       "forms": {
-        "v_vvp": {
+        "v_vv": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
             { "name": "src1", "role": "src1", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
-            { "name": "pin0", "role": "pin0", "kind": "pred", "oprnd_flag": ["src_bit_modi"] },
           ],
         },
-        "v_vip": {
+        "v_vi": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
             { "name": "src1", "role": "src1", "kind": "imm32" },
-            { "name": "pin0", "role": "pin0", "kind": "pred", "oprnd_flag": ["src_bit_modi"] },
           ],
         },
-        "v_vxp": {
+        "v_vx": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
             { "name": "src1", "role": "src1", "kind": "sreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
-            { "name": "pin0", "role": "pin0", "kind": "pred", "oprnd_flag": ["src_bit_modi"] },
           ],
         },
       },
@@ -945,36 +941,27 @@
         },
       },
       "inst_modifiers": ["bound_mode"],
-      "fixed_modifiers": ["uniform_datapath"],
       "forms": {
-        "vector": {
-          "fixed_modi_vals": { "uniform_datapath": "SIMT" },
-          "forms": {
-            "v_vi": {
-              "operands": [
-                { "name": "dst", "role": "dst", "kind": "vreg" },
-                { "name": "src0", "role": "src0", "kind": "vreg" },
-                { "name": "src1", "role": "src1", "kind": "imm32" },
-              ],
-            },
-            "v_vx": {
-              "operands": [
-                { "name": "dst", "role": "dst", "kind": "vreg" },
-                { "name": "src0", "role": "src0", "kind": "vreg" },
-                { "name": "src1", "role": "src1", "kind": "sreg" },
-              ],
-            },
-            "v_vv": {
-              "operands": [
-                { "name": "dst", "role": "dst", "kind": "vreg" },
-                { "name": "src0", "role": "src0", "kind": "vreg" },
-                { "name": "src1", "role": "src1", "kind": "vreg" },
-              ],
-            },
-          },
+        "v_vi": {
+          "operands": [
+            { "name": "dst", "role": "dst", "kind": "vreg" },
+            { "name": "src0", "role": "src0", "kind": "vreg" },
+            { "name": "src1", "role": "src1", "kind": "imm32" },
+          ],
         },
-        "scalar": {
-          "fixed_modi_vals": { "uniform_datapath": "UNI" },
+        "v_vx": {
+          "operands": [
+            { "name": "dst", "role": "dst", "kind": "vreg" },
+            { "name": "src0", "role": "src0", "kind": "vreg" },
+            { "name": "src1", "role": "src1", "kind": "sreg" },
+          ],
+        },
+        "v_vv": {
+          "operands": [
+            { "name": "dst", "role": "dst", "kind": "vreg" },
+            { "name": "src0", "role": "src0", "kind": "vreg" },
+            { "name": "src1", "role": "src1", "kind": "vreg" },
+          ],
         },
       },
     },
@@ -1008,17 +995,6 @@
       "semantics": {
         "effect": "dst = first_leading_one(src0) (find first leading one from LSB)",
         "SASS": "FLO",
-      },
-      "local_modifier_defs": {
-        "shiftamt": {
-          "bits": 1,
-          "enum": {
-            "NO_SHIFT": 0,
-            "shiftamt": 1,
-          },
-          "default": "NO_SHIFT",
-          "meaning": "When set, FLO.shiftamt returns (31 - normal FLO), equivalent to count leading zeros from MSB.",
-        },
       },
       "inst_modifiers": ["shiftamt"],
       "forms": {
@@ -1114,11 +1090,12 @@
       "semantics": {
         "effect": "dst = src0 * src1 + src2 (integer multiply-add)",
         "notes": [
-          "signed 作用在乘法的解释上（加法本身是模 2^32 或 2^64 的整数加法，对 signed/unsigned 没有区别）。",
-          ".WIDE 表示 乘积扩展到 64bit，并与 64bit 累加数相加，结果写回 64bit：dst 写 2 slots、src2 读 2 slots。",
+          "signed 作用在乘法的解释上（加法是补码加法，对 signed/unsigned 没有区别）。",
+          ".WIDE 表示 乘积扩展到 64bit，并与 64bit 累加数相加，结果写回 64bit：dst 写 2 slots、src2 读 2 slots（若为 register）。",
           "ccin 表示给加法阶段增加 carry‑in。当开启 ccin 时，",
           "  - not .WIDE：(src0*src1 + src2    + cin) mod 2^32；",
           "  - .WIDE：    (src0*src1 + src2_64 + cin) mod 2^64",
+          "当",
         ],
         "SASS": "IMAD",
       },
@@ -1131,124 +1108,122 @@
         },
       },
       "inst_modifiers": ["is_signed"],
-      "fixed_modifiers": ["wide", "ccin"],
+      "fixed_modifiers": ["wide"],
       "forms": {
-        "v_vvi": {
-          "fixed_modi_vals": { "wide": "DISABLE", "ccin": "DISABLE" },
-          "operands": [
-            { "name": "dst", "role": "dst", "kind": "vreg" },
-            { "name": "src0", "role": "src0", "kind": "vreg" },
-            { "name": "src1", "role": "src1", "kind": "vreg" },
-            { "name": "src2", "role": "src2", "kind": "imm32" },
-          ],
+        "": {
+          "fixed_modi_vals": { "wide": "DISABLE" },
+          "forms": {
+            "v_vvi": {
+              "operands": [
+                { "name": "dst", "role": "dst", "kind": "vreg" },
+                { "name": "src0", "role": "src0", "kind": "vreg" },
+                { "name": "src1", "role": "src1", "kind": "vreg" },
+                { "name": "src2", "role": "src2", "kind": "imm32" },
+              ],
+            },
+            "v_viv": {
+              "operands": [
+                { "name": "dst", "role": "dst", "kind": "vreg" },
+                { "name": "src0", "role": "src0", "kind": "vreg" },
+                { "name": "src1", "role": "src1", "kind": "imm32" },
+                { "name": "src2", "role": "src2", "kind": "vreg", "oprnd_flag": ["src_int_modi"] },
+              ],
+            },
+            "v_vxv": {
+              "operands": [
+                { "name": "dst", "role": "dst", "kind": "vreg" },
+                { "name": "src0", "role": "src0", "kind": "vreg" },
+                { "name": "src1", "role": "src1", "kind": "sreg" },
+                { "name": "src2", "role": "src2", "kind": "vreg", "oprnd_flag": ["src_int_modi"] },
+              ],
+            },
+            "v_vvx": {
+              "operands": [
+                { "name": "dst", "role": "dst", "kind": "vreg" },
+                { "name": "src0", "role": "src0", "kind": "vreg" },
+                { "name": "src1", "role": "src1", "kind": "vreg" },
+                { "name": "src2", "role": "src2", "kind": "sreg", "oprnd_flag": ["src_int_modi"] },
+              ],
+            },
+            "v_vvv": {
+              "operands": [
+                { "name": "dst", "role": "dst", "kind": "vreg" },
+                { "name": "src0", "role": "src0", "kind": "vreg" },
+                { "name": "src1", "role": "src1", "kind": "vreg" },
+                { "name": "src2", "role": "src2", "kind": "vreg", "oprnd_flag": ["src_int_modi"] },
+              ],
+            },
+          },
         },
-        "v_viv": {
-          "fixed_modi_vals": { "wide": "DISABLE", "ccin": "DISABLE" },
-          "operands": [
-            { "name": "dst", "role": "dst", "kind": "vreg" },
-            { "name": "src0", "role": "src0", "kind": "vreg" },
-            { "name": "src1", "role": "src1", "kind": "imm32" },
-            { "name": "src2", "role": "src2", "kind": "vreg", "oprnd_flag": ["src_int_modi"] },
-          ],
-        },
-        "vp_viv_wide": {
-          "fixed_modi_vals": { "wide": "WIDE", "ccin": "DISABLE" },
-          "operands": [
-            { "name": "dst", "role": "dst", "kind": "vreg" },
-            { "name": "pout0", "role": "pout0", "kind": "pred" },
-            { "name": "src0", "role": "src0", "kind": "vreg" },
-            { "name": "src1", "role": "src1", "kind": "imm32" },
-            { "name": "src2", "role": "src2", "kind": "vreg", "oprnd_flag": ["src_int_modi"] },
-          ],
-        },
-        "v_vxv": {
-          "fixed_modi_vals": { "wide": "DISABLE", "ccin": "DISABLE" },
-          "operands": [
-            { "name": "dst", "role": "dst", "kind": "vreg" },
-            { "name": "src0", "role": "src0", "kind": "vreg" },
-            { "name": "src1", "role": "src1", "kind": "sreg" },
-            { "name": "src2", "role": "src2", "kind": "vreg", "oprnd_flag": ["src_int_modi"] },
-          ],
-        },
-        "vp_vxv_wide": {
-          "fixed_modi_vals": { "wide": "WIDE", "ccin": "DISABLE" },
-          "operands": [
-            { "name": "dst", "role": "dst", "kind": "vreg" },
-            { "name": "pout0", "role": "pout0", "kind": "pred" },
-            { "name": "src0", "role": "src0", "kind": "vreg" },
-            { "name": "src1", "role": "src1", "kind": "sreg" },
-            { "name": "src2", "role": "src2", "kind": "vreg", "oprnd_flag": ["src_int_modi"] },
-          ],
-        },
-        "v_vvx": {
-          "fixed_modi_vals": { "wide": "DISABLE", "ccin": "DISABLE" },
-          "operands": [
-            { "name": "dst", "role": "dst", "kind": "vreg" },
-            { "name": "src0", "role": "src0", "kind": "vreg" },
-            { "name": "src1", "role": "src1", "kind": "vreg" },
-            { "name": "src2", "role": "src2", "kind": "sreg", "oprnd_flag": ["src_int_modi"] },
-          ],
-        },
-        "vp_vvx_wide": {
-          "fixed_modi_vals": { "wide": "WIDE", "ccin": "DISABLE" },
-          "operands": [
-            { "name": "dst", "role": "dst", "kind": "vreg" },
-            { "name": "pout0", "role": "pout0", "kind": "pred" },
-            { "name": "src0", "role": "src0", "kind": "vreg" },
-            { "name": "src1", "role": "src1", "kind": "vreg" },
-            { "name": "src2", "role": "src2", "kind": "sreg", "oprnd_flag": ["src_int_modi"] },
-          ],
-        },
-        "v_vvv": {
-          "fixed_modi_vals": { "wide": "DISABLE", "ccin": "DISABLE" },
-          "operands": [
-            { "name": "dst", "role": "dst", "kind": "vreg" },
-            { "name": "src0", "role": "src0", "kind": "vreg" },
-            { "name": "src1", "role": "src1", "kind": "vreg" },
-            { "name": "src2", "role": "src2", "kind": "vreg", "oprnd_flag": ["src_int_modi"] },
-          ],
-        },
-        "vp_vvv_wide": {
-          "fixed_modi_vals": { "wide": "WIDE", "ccin": "DISABLE" },
-          "operands": [
-            { "name": "dst", "role": "dst", "kind": "vreg" },
-            { "name": "pout0", "role": "pout0", "kind": "pred" },
-            { "name": "src0", "role": "src0", "kind": "vreg" },
-            { "name": "src1", "role": "src1", "kind": "vreg" },
-            { "name": "src2", "role": "src2", "kind": "vreg", "oprnd_flag": ["src_int_modi"] },
-          ],
+        "wide": {
+          "fixed_modi_vals": { "wide": "WIDE" },
+          "forms": {
+            "vp_viv": {
+              "operands": [
+                { "name": "dst", "role": "dst", "kind": "vreg" },
+                { "name": "pout0", "role": "pout0", "kind": "pred" },
+                { "name": "src0", "role": "src0", "kind": "vreg" },
+                { "name": "src1", "role": "src1", "kind": "imm32" },
+                { "name": "src2", "role": "src2", "kind": "vreg", "oprnd_flag": ["src_int_modi"] },
+              ],
+            },
+            "vp_vxv": {
+              "operands": [
+                { "name": "dst", "role": "dst", "kind": "vreg" },
+                { "name": "pout0", "role": "pout0", "kind": "pred" },
+                { "name": "src0", "role": "src0", "kind": "vreg" },
+                { "name": "src1", "role": "src1", "kind": "sreg" },
+                { "name": "src2", "role": "src2", "kind": "vreg", "oprnd_flag": ["src_int_modi"] },
+              ],
+            },
+            "vp_vvx": {
+              "operands": [
+                { "name": "dst", "role": "dst", "kind": "vreg" },
+                { "name": "pout0", "role": "pout0", "kind": "pred" },
+                { "name": "src0", "role": "src0", "kind": "vreg" },
+                { "name": "src1", "role": "src1", "kind": "vreg" },
+                { "name": "src2", "role": "src2", "kind": "sreg", "oprnd_flag": ["src_int_modi"] },
+              ],
+            },
+            "vp_vvv": {
+              "operands": [
+                { "name": "dst", "role": "dst", "kind": "vreg" },
+                { "name": "pout0", "role": "pout0", "kind": "pred" },
+                { "name": "src0", "role": "src0", "kind": "vreg" },
+                { "name": "src1", "role": "src1", "kind": "vreg" },
+                { "name": "src2", "role": "src2", "kind": "vreg", "oprnd_flag": ["src_int_modi"] },
+              ],
+            },
+          },
         },
       },
     },
     "imnmx": {
       "semantics": {
-        "effect": "dst = pred_operand ? min(src0, src1) : max(src0, src1) (integer min/max)",
+        "effect": "dst = (mn_mx == MIN) ? min(src0, src1) : max(src0, src1) (integer min/max)",
         "SASS": "IMNMX",
       },
-      "inst_modifiers": ["is_signed"],
+      "inst_modifiers": ["is_signed", "mn_mx"],
       "forms": {
-        "v_vvp": {
+        "v_vv": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "vreg" },
             { "name": "src1", "role": "src1", "kind": "vreg" },
-            { "name": "pin0", "role": "pin0", "kind": "pred", "oprnd_flag": ["src_bit_modi"] },
           ],
         },
-        "v_vip": {
+        "v_vi": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "vreg" },
             { "name": "src1", "role": "src1", "kind": "imm32" },
-            { "name": "pin0", "role": "pin0", "kind": "pred", "oprnd_flag": ["src_bit_modi"] },
           ],
         },
-        "v_vxp": {
+        "v_vx": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "src0", "role": "src0", "kind": "vreg" },
             { "name": "src1", "role": "src1", "kind": "sreg" },
-            { "name": "pin0", "role": "pin0", "kind": "pred", "oprnd_flag": ["src_bit_modi"] },
           ],
         },
       },
@@ -1792,6 +1767,24 @@
         },
       },
     },
+    "atom": {
+      "semantics": {
+        "effect": "Perform atomic operation on generic memory",
+        "SASS": "ATOM",
+      },
+    },
+    "atoms": {
+      "semantics": {
+        "effect": "Perform atomic operation on shared memory",
+        "SASS": "ATOMS",
+      },
+    },
+    "atomg": {
+      "semantics": {
+        "effect": "Perform atomic operation on global memory",
+        "SASS": "ATOMG",
+      },
+    },
 
     ////////////////////////////////
     /* Miscellaneous Instructions */
@@ -1930,5 +1923,278 @@
     ///////////////////////////////////
     /* Uniform Datapath Instructions */
     ///////////////////////////////////
+    "ubmsk": {
+      "semantics": {
+        "effect": "dst = ((1 << src0[4:0].u32) - 1) << src1[4:0].u32",
+        "SASS": "UBMSK",
+        "notes": ["Generate a bitmask with length and position specified."],
+      },
+      "local_modifier_defs": {
+        "bound_mode": {
+          "bits": 1,
+          "enum": { "clamp": 0, "wrap": 1 },
+          "meaning": " Select the mode for out-of-bounds: clamp to the valid range or wrap around.",
+        },
+      },
+      "inst_modifiers": ["bound_mode"],
+      "forms": {
+        "x_xi": {
+          "operands": [
+            { "name": "dst", "role": "dst", "kind": "sreg" },
+            { "name": "src0", "role": "src0", "kind": "sreg" },
+            { "name": "src1", "role": "src1", "kind": "imm32" },
+          ],
+        },
+        "x_xx": {
+          "operands": [
+            { "name": "dst", "role": "dst", "kind": "sreg" },
+            { "name": "src0", "role": "src0", "kind": "sreg" },
+            { "name": "src1", "role": "src1", "kind": "sreg" },
+          ],
+        },
+      },
+    },
+    "ubrev": {
+      "semantics": {
+        "effect": "scalar (uniform) bitwise reverse",
+        "SASS": "UBREV",
+      },
+      "forms": {
+        "x_x": {
+          "operands": [
+            { "name": "dst", "role": "dst", "kind": "sreg" },
+            { "name": "src0", "role": "src0", "kind": "sreg" },
+          ],
+        },
+        "x_i": {
+          "operands": [
+            { "name": "dst", "role": "dst", "kind": "sreg" },
+            { "name": "src0", "role": "src0", "kind": "imm32" },
+          ],
+        },
+      },
+    },
+    "uflo": {
+      "semantics": {
+        "effect": "scalar (uniform) find leading one",
+        "SASS": "UFLO",
+      },
+      "inst_modifiers": ["shiftamt"],
+      "forms": {
+        "x_x": {
+          "operands": [
+            { "name": "dst", "role": "dst", "kind": "sreg" },
+            { "name": "src0", "role": "src0", "kind": "sreg" },
+          ],
+        },
+        "x_i": {
+          "operands": [
+            { "name": "dst", "role": "dst", "kind": "sreg" },
+            { "name": "src0", "role": "src0", "kind": "imm32" },
+          ],
+        },
+      },
+    },
+    "upopc": {
+      "semantics": {
+        "effect": "scalar (uniform) population count",
+        "SASS": "UPOPC",
+      },
+      "forms": {
+        "x_x": {
+          "operands": [
+            { "name": "dst", "role": "dst", "kind": "sreg" },
+            { "name": "src0", "role": "src0", "kind": "sreg", "oprnd_flag": ["src_bit_modi"] },
+          ],
+        },
+        "x_i": {
+          "operands": [
+            { "name": "dst", "role": "dst", "kind": "sreg" },
+            { "name": "src0", "role": "src0", "kind": "imm32" },
+          ],
+        },
+      },
+    },
+    "uprmt": {
+      "semantics": {
+        "effect": "scalar (uniform) permute",
+        "SASS": "UPRMT",
+      },
+      "forms": {
+        "x_xxx": {
+          "operands": [
+            { "name": "dst", "role": "dst", "kind": "sreg" },
+            { "name": "src0", "role": "src0", "kind": "sreg" },
+            { "name": "src1", "role": "src1", "kind": "sreg" },
+            { "name": "src2", "role": "src2", "kind": "sreg" },
+          ],
+        },
+        "x_xix": {
+          "operands": [
+            { "name": "dst", "role": "dst", "kind": "sreg" },
+            { "name": "src0", "role": "src0", "kind": "sreg" },
+            { "name": "src1", "role": "src1", "kind": "imm32" },
+            { "name": "src2", "role": "src2", "kind": "sreg" },
+          ],
+        },
+      },
+    },
+    "uiadd": {
+      "semantics": {
+        "effect": "scalar (uniform) integer addition/subtraction",
+        "SASS": "UIADD",
+      },
+      "local_modifier_defs": {
+        // 加法长度：32bit/64bit/32bit widening
+        "uadd_length": {
+          "bits": 2,
+          "enum": ["U32", "U64", "U32_WIDEN"],
+          "meaning": [
+            "Addition length.",
+            "U32: src0, src1 are 32-bit integers from 1 register or imm; result is 32-bit integer stored in 1 register.",
+            "U64: src0, src1 are 64-bit integers from 2 consecutive registers, or 32-bit imm; result is 64-bit integer stored in 2 consecutive registers.",
+            "U32_WIDEN: src0, src2 are 32-bit integers from 1 register or imm; result is 64-bit integer stored in 2 consecutive registers.",
+          ],
+        },
+      },
+      "inst_modifiers": ["uadd_length"],
+      "forms": {
+        "x_xx": {
+          "operands": [
+            { "name": "dst", "role": "dst", "kind": "sreg" },
+            { "name": "src0", "role": "src0", "kind": "sreg", "oprnd_flag": ["src_int_modi"] },
+            { "name": "src1", "role": "src1", "kind": "sreg", "oprnd_flag": ["src_int_modi"] },
+          ],
+        },
+        "x_xi": {
+          "operands": [
+            { "name": "dst", "role": "dst", "kind": "sreg" },
+            { "name": "src0", "role": "src0", "kind": "sreg", "oprnd_flag": ["src_int_modi"] },
+            { "name": "src1", "role": "src1", "kind": "imm32" },
+          ],
+        },
+      },
+    },
+    "uimnmx": {
+      "semantics": {
+        "effect": "scalar (uniform) integer min/max",
+        "SASS": "UIMNMX",
+      },
+      "local_modifier_defs": {},
+      "inst_modifiers": ["is_signed", "mn_mx"],
+      "forms": {
+        "x_xx": {
+          "operands": [
+            { "name": "dst", "role": "dst", "kind": "sreg" },
+            { "name": "src0", "role": "src0", "kind": "sreg" },
+            { "name": "src1", "role": "src1", "kind": "sreg" },
+          ],
+        },
+        "x_xi": {
+          "operands": [
+            { "name": "dst", "role": "dst", "kind": "sreg" },
+            { "name": "src0", "role": "src0", "kind": "sreg" },
+            { "name": "src1", "role": "src1", "kind": "imm32" },
+          ],
+        },
+      },
+    },
+    "uimad": {
+      "semantics": {
+        "effect": "scalar (uniform) integer multiply-add",
+        "SASS": "UIMAD",
+        "notes": ["dst = src0 * src1 + src2"],
+      },
+    },
+    "uimul": {
+      "semantics": {
+        "effect": "scalar (uniform) integer multiply",
+        "SASS": "UIMUL",
+        "notes": ["dst = src0 * src1"],
+      },
+    },
+    "auipc": {
+      "semantics": {
+        "effect": "Get the current PC-relative address and add an immediate offset",
+      },
+      "forms": {
+        "x_i": {
+          "operands": [
+            { "name": "dst", "role": "dst", "kind": "sreg" },
+            { "name": "imm", "role": "src0", "kind": "imm32" },
+          ],
+        },
+      },
+    },
+    "csrrc": {
+      "semantics": {
+        "notes": ["记控制状态寄存器 csr 中的值为 t。把 t 和寄存器 x[rs1] 按位与的结果写入 csr，再把 t 写入 x[rd]。"],
+      },
+      "forms": {
+        "x_xr": {
+          "operands": [
+            { "name": "dst", "role": "dst", "kind": "sreg" },
+            { "name": "csr", "role": "src0", "kind": "imm12" },
+            { "name": "src1", "role": "src1", "kind": "sreg" },
+          ],
+        },
+      },
+    },
+    "csrrci": {
+      "semantics": {
+        "notes": ["记控制状态寄存器 csr 中的值为 t。把 t 和立即数 zimm 按位与的结果写入 csr，再把 t 写入 x[rd]。"],
+      },
+      "forms": {
+        "x_xi": {
+          "operands": [
+            { "name": "dst", "role": "dst", "kind": "sreg" },
+            { "name": "csr", "role": "src0", "kind": "imm12" },
+            { "name": "src1", "role": "src1", "kind": "imm5" },
+          ],
+        },
+      },
+    },
+    "csrrs": {
+      "semantics": {
+        "notes": ["记控制状态寄存器 csr 中的值为 t。把 t 和寄存器 x[rs1] 按位或的结果写入 csr，再把 t 写入 x[rd]。"],
+      },
+      "forms": {
+        "x_xr": {
+          "operands": [
+            { "name": "dst", "role": "dst", "kind": "sreg" },
+            { "name": "csr", "role": "src0", "kind": "imm12" },
+            { "name": "src1", "role": "src1", "kind": "sreg" },
+          ],
+        },
+      },
+    },
+    "csrrw": {
+      "semantics": {
+        "notes": ["把寄存器 x[rs1] 的值写入控制状态寄存器 csr，同时把 csr 中的值写入 x[rd]。"],
+      },
+      "forms": {
+        "x_xr": {
+          "operands": [
+            { "name": "dst", "role": "dst", "kind": "sreg" },
+            { "name": "csr", "role": "src0", "kind": "imm12" },
+            { "name": "src1", "role": "src1", "kind": "sreg" },
+          ],
+        },
+      },
+    },
+    "csrrwi": {
+      "semantics": {
+        "notes": ["把立即数 zimm 写入控制状态寄存器 csr，同时把 csr 中的值写入 x[rd]。"],
+      },
+      "forms": {
+        "x_xi": {
+          "operands": [
+            { "name": "dst", "role": "dst", "kind": "sreg" },
+            { "name": "csr", "role": "src0", "kind": "imm12" },
+            { "name": "src1", "role": "src1", "kind": "imm5" },
+          ],
+        },
+      },
+    },
   },
 }
