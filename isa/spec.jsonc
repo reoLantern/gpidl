@@ -138,14 +138,19 @@
     "ftz": {
       "bits": 1,
       "enum": { "DISABLE": 0, "FTZ": 1 },
-      "meaning": "Enable or disable flush-to-zero for subnormal floating-point inputs.",
+      "meaning": "Flush input/output denorms to sign-preserving zero.",
     },
     "fmz": {
       // TODO
       "bits": 1,
       "enum": { "DISABLE": 0, "FMZ": 1 },
       "default": "DISABLE",
-      "meaning": "TODO: Enable or disable flush-to-zero for internal subnormal floating-point multiplication results.",
+      "meaning": [
+        "Flush input/output denorms to sign-preserving zero AND ",
+        "if either source is 0.0, the product is forced to +0.0 (even if other source is infinity or NaN),",
+        "regardless of the input signs.",
+        "The 0.0 test is done after input denorm flush.",
+      ],
     },
     "relu": {
       // TODO

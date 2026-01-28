@@ -57,11 +57,13 @@ Source operand SbMask may have one of these forms:
 Predicate Register <b>PR</b> or Condition Code register <b>CC</b> and bits from register Ra. 
 Bits 7:0 of source operand SbMask select which individual bits of <b>PR/CC</b> bits are read.  A SbMask
 bit of 1 reads the corresponding <b>PR/CC</b> bit; an SbMask bit of 0
-reads an Ra bit from the byte specified by .insert modifier in register Ra.</p>
+reads an Ra bit from the byte specified by .insert modifier in register Ra.<br>
+<b>P2R</b> 将目的寄存器 Rd 写为：来自 Predicate Register <b>PR</b> 或 Condition Code register <b>CC</b> 的位与寄存器 Ra 中的位进行合并后的结果。源操作数 SbMask 的 bit[7:0] 选择读取 <b>PR/CC</b> 的哪些具体位。SbMask 中为 1 的位读取对应的 <b>PR/CC</b> 位；SbMask 中为 0 的位则从寄存器 Ra 中由 .insert 修饰符指定的 byte 读取 Ra 位。</p>
 
 
 <p>
-Predicate Register <b>PR</b> holds the predicates P0 - P6 for each thread arranged in the 8-bit layout below.</p>
+Predicate Register <b>PR</b> holds the predicates P0 - P6 for each thread arranged in the 8-bit layout below.<br>
+Predicate Register <b>PR</b> 保存每个 thread 的谓词 P0 - P6，按下面的 8-bit 布局排列。</p>
 <pre>
          <b>Predicate Register PR</b>
      7    6    5    4    3    2    1    0 
@@ -71,7 +73,8 @@ Predicate Register <b>PR</b> holds the predicates P0 - P6 for each thread arrang
 </pre>
 
 Condition code  Register <b>CC</b> holds the condition code CC flags ZF, SF, CF, and OF for each thread, 
-arranged in the 8-bit layout below.</p>
+arranged in the 8-bit layout below.<br>
+Condition code Register <b>CC</b> 保存每个 thread 的 condition code CC 标志 ZF、SF、CF 和 OF，按下面的 8-bit 布局排列。</p>
 <pre>
         <b>Condition Code Register CC</b>
    7    6    5    4    3    2    1    0 
@@ -83,9 +86,12 @@ arranged in the 8-bit layout below.</p>
 <p>
 The simple form of <b>P2R</b> is assembled as <b>P2R.B0</b> Rd,
 <b>PR/CC, RZ, 0xFF;</b>.  Simple <b>P2R</b> writes register Rd with
-zero-extended <b>PR/CC</b>.   </p>
+zero-extended <b>PR/CC</b>.<br>
+<b>P2R</b> 的简单形式会被汇编为 <b>P2R.B0</b> Rd, <b>PR/CC, RZ, 0xFF;</b>。简单 <b>P2R</b> 将 zero-extended 的 <b>PR/CC</b> 写入寄存器 Rd。</p>
 <p>
 Optional .insert  modifier allows merging <b>PR/CC</b> register at arbitrary byte of register Ra.
+<br>
+可选的 .insert 修饰符允许在寄存器 Ra 的任意 byte 处合并 <b>PR/CC</b> 寄存器。
 </p>
 
 
