@@ -250,7 +250,7 @@
     /* Floating Point Instructions */
     /////////////////////////////////
     "vfadd": {
-      "semantics": {
+      "behavior": {
         "effect": "dst = src0 + src1 (floating-point addition)",
       },
       "local_modifier_defs": {
@@ -319,7 +319,7 @@
       ],
     },
     "FFMA": {
-      "semantics": {
+      "behavior": {
         "effect": "dst = src0 * src1 + src2 (floating-point fused multiply-add)",
       },
 
@@ -405,7 +405,7 @@
       ],
     },
     "vfmnmx": {
-      "semantics": {
+      "behavior": {
         "meaning": "vector floating-point min/max with predicate",
         "effect": "d = pred_operand ? min(a,b) : max(a,b)",
       },
@@ -481,7 +481,7 @@
       ],
     },
     "vfmnmx3": {
-      "semantics": {
+      "behavior": {
         "meaning": "3-operand vector floating-point min/max with predicate",
         "effect": "d = pred_operand ? min(a,b,c) : max(a,b,c);",
       },
@@ -519,7 +519,7 @@
       ],
     },
     "vfmul": {
-      "semantics": {
+      "behavior": {
         "effect": "dst = src0 * src1 (floating-point multiplication)",
       },
       "global_modifiers": ["rnd_mode", "ftz", "sat", "output_modifier"],
@@ -551,7 +551,7 @@
       ],
     },
     "vfsel": {
-      "semantics": {
+      "behavior": {
         "effect": "dst = pin0 ? src0 : src1 (floating-point select)",
       },
       "global_modifiers": ["ftz"],
@@ -586,7 +586,7 @@
       ],
     },
     "vfcmp": {
-      "semantics": {
+      "behavior": {
         "effect": "pout/dst = ((src0 CMP src1) ? 1 : 0) pred_comb pin0 (floating-point compare)",
         "note": "BoolFM 只在写回 per-thread register 时生效：当其为 BM，写回 0xffffffff / 0x0；当其为 BF，写回 1.0 / 0.0。",
         "TODO": "检查这里的 forms 哪些是需要的",
@@ -680,7 +680,7 @@
       ],
     },
     "vf_pk_cmp": {
-      "semantics": {
+      "behavior": {
         "effect": "pout/dst = ((src0 CMP src1) ? 1 : 0) pred_comb pin0 (floating-point packed compare)",
         "note": [
           "Compare two packed FP16/BF16 values within 32-bit registers.",
@@ -783,7 +783,7 @@
       ],
     },
     "vfsf": {
-      "semantics": {
+      "behavior": {
         "effect": "dst = SFU_function(src0) (floating-point special function)",
       },
       "local_modifier_defs": {
@@ -827,7 +827,7 @@
       ],
     },
     "vf_pk_add": {
-      "semantics": {
+      "behavior": {
         "effect": "dst = pack_add(src0, src1) (floating-point packed add)",
       },
       "global_modifiers": ["ftz", "sat", "type_fp16_bf16"],
@@ -868,7 +868,7 @@
       ],
     },
     "vf_pk_fma": {
-      "semantics": {
+      "behavior": {
         "effect": "dst = src0 * src1 + src2 (floating-point packed fused multiply-add)",
       },
       "global_modifiers": ["ftz", "fmz", "sat", "type_fp16_bf16"],
@@ -921,7 +921,7 @@
       ],
     },
     "vf_pk_mnmx": {
-      "semantics": {
+      "behavior": {
         "effect": "dst = pack_mul(src0, src1) (floating-point packed multiplication)",
       },
       "global_modifiers": ["ftz", "fmz", "sat", "type_fp16_bf16", "xorsign"],
@@ -956,7 +956,7 @@
       ],
     },
     "vf_pk_mul": {
-      "semantics": {
+      "behavior": {
         "effect": "dst = pack_mul(src0, src1) (floating-point packed multiplication)",
       },
       "global_modifiers": ["ftz", "fmz", "sat", "type_fp16_bf16"],
@@ -992,7 +992,7 @@
     /* Integer Instructions */
     //////////////////////////
     "BMSK": {
-      "semantics": {
+      "behavior": {
         "effect": "dst = ((1 << src0[4:0].u32) - 1) << src1[4:0].u32 (bitmask generation)",
       },
       "global_modifiers": ["bound_mode"],
@@ -1024,7 +1024,7 @@
       ],
     },
     "BREV": {
-      "semantics": {
+      "behavior": {
         "effect": "dst = bit_reverse(src0) (bitwise reverse)",
       },
       "forms": [
@@ -1052,7 +1052,7 @@
       ],
     },
     "FLO": {
-      "semantics": {
+      "behavior": {
         "effect": "dst = first_leading_one(src0) (find first leading one from LSB)",
       },
       "local_modifier_defs": {
@@ -1092,7 +1092,7 @@
       ],
     },
     "IABS": {
-      "semantics": {
+      "behavior": {
         "effect": "dst = abs(src0) (integer absolute value)",
       },
       "forms": [
@@ -1120,7 +1120,7 @@
       ],
     },
     "IADD3": {
-      "semantics": {
+      "behavior": {
         "effect": "dst = src0 + src1 + src2 (3-input Integer Addition)",
       },
       "global_modifiers": ["ccin"],
@@ -1227,7 +1227,7 @@
       ],
     },
     "IMAD": {
-      "semantics": {
+      "behavior": {
         "effect": "dst = src0 * src1 + src2 (integer multiply-add)",
         "note": [
           "signed 作用在乘法的解释上（加法本身是模 2^32 或 2^64 的整数加法，对 signed/unsigned 没有区别）。",
@@ -1336,7 +1336,7 @@
       ],
     },
     "vimnmx": {
-      "semantics": {
+      "behavior": {
         "effect": "dst = pred_operand ? min(src0, src1) : max(src0, src1) (integer min/max)",
       },
       "global_modifiers": ["signed"],
@@ -1371,7 +1371,7 @@
       ],
     },
     "vicmp": {
-      "semantics": {
+      "behavior": {
         "effect": "pout/dst = ((src0 CMP src1) ? 1 : 0) pred_comb pin0 (integer compare)",
         "TODO": "检查这里的 forms 哪些是需要的",
       },
@@ -1407,7 +1407,7 @@
       ],
     },
     "v_shl_add": {
-      "semantics": {
+      "behavior": {
         "effect": "dst{|pout0} = src0 + (src1 << src2) + src3 {+ pin0}",
         "note": [
           "If ccin is set, the addition includes an additional carry-in bit.",
@@ -1507,7 +1507,7 @@
       ],
     },
     "LOP3": {
-      "semantics": {
+      "behavior": {
         "effect": "dst = lop3(src0, src1, src2, imm8)",
       },
       "forms": [
@@ -1544,7 +1544,7 @@
       ],
     },
     "POPC": {
-      "semantics": {
+      "behavior": {
         "effect": "Count the number of one bits in a and place the resulting population count in 32-bit destination register d",
       },
       "forms": [
@@ -1570,7 +1570,7 @@
     /////////////////////////////
 
     "cvt": {
-      "semantics": {
+      "behavior": {
         "effect": "dst = convert(src0)",
         "note": [
           "dtype/atype selects how to interpret src0 bits and how to encode dst.",
@@ -1578,7 +1578,7 @@
           "For narrow destinations, the converted value is placed in the lower bits of dst; integer results are sign/zero-extended to the register width and floating/bit-size results are zero-extended.",
           "cvt_rnd selects rounding behavior. Integer-rounding modes (rni/rzi/rpi/rmi) are only valid for same-width fp->fp conversions and produce an integral value stored in floating-point format.",
           "ftz applies only to f32 inputs/results; it flushes subnormal f32 inputs/results to sign-preserving zero.",
-          "sat semantics follow the global sat modifier definition (int clamp, fp clamp to [0,1]).",
+          "sat behavior follow the global sat modifier definition (int clamp, fp clamp to [0,1]).",
         ],
       },
       "local_modifier_defs": {
@@ -1653,7 +1653,7 @@
     },
 
     "cvt_f16bf16_f32": {
-      "semantics": {
+      "behavior": {
         "effect": "dst16 = convert(src0_f32) (fp16/bf16 destination, scalar)",
         "note": [
           "type_fp16_bf16 selects fp16 vs bf16 destination encoding.",
@@ -1682,7 +1682,7 @@
     },
 
     "cvt_f16bf16x2_f32": {
-      "semantics": {
+      "behavior": {
         "effect": "dst = pack2(convert(src0_f32), convert(src1_f32)) (fp16x2/bf16x2 destination)",
         "note": [
           "type_fp16_bf16 selects fp16x2 vs bf16x2 destination encoding.",
@@ -1722,7 +1722,7 @@
     },
 
     "cvt_tf32_f32": {
-      "semantics": {
+      "behavior": {
         "effect": "dst = convert_tf32(src0_f32) (tf32 destination encoding)",
         "note": ["rnd selects rounding mode for tf32: rn/rz/rna.", "satfinite and relu apply to the converted tf32 value."],
       },
@@ -1746,7 +1746,7 @@
     },
 
     "cvt_tinyx2_f32": {
-      "semantics": {
+      "behavior": {
         "effect": "dst = pack2(convert(src0_f32), convert(src1_f32)) (tiny fp destination x2)",
         "note": [
           "tiny_fp_kind selects the destination tiny format family: {E4M3,E5M2,E2M1,E2M3,E3M2}.",
@@ -1771,7 +1771,7 @@
     },
 
     "cvt_tinyx2_fp16x2": {
-      "semantics": {
+      "behavior": {
         "effect": "dst = pack2(convert(src0_lane0), convert(src0_lane1)) (tiny fp destination x2)",
         "note": [
           "tiny_fp_kind selects the destination tiny format family; the concrete destination type is kind+x2.",
@@ -1795,7 +1795,7 @@
     },
 
     "cvt_f16x2_tinyx2": {
-      "semantics": {
+      "behavior": {
         "effect": "dst = pack2(convert(src0_lane0), convert(src0_lane1)) (fp16x2 destination)",
         "note": [
           "tiny_fp_kind selects the source tiny format family; the concrete source type is kind+x2.",
@@ -1816,7 +1816,7 @@
     },
 
     "cvt_tinyx4_rs0": {
-      "semantics": {
+      "behavior": {
         "effect": "dst_state = pack2_rs(convert(src0_f32), convert(src1_f32), rbits) (tiny fp destination x4, stage0)",
         "note": [
           "This is a hardware primitive used to build cvt.rs.*x4.f32: stage0 converts lanes (a,b) using rbits and produces an intermediate state.",
@@ -1842,7 +1842,7 @@
     },
 
     "cvt_tinyx4_rs1": {
-      "semantics": {
+      "behavior": {
         "effect": "dst = pack2_rs_merge(convert(src0_f32), convert(src1_f32), state) (tiny fp destination x4, stage1)",
         "note": [
           "Stage1 consumes the intermediate state produced by cvt_tinyx4_rs0 as src2.",
@@ -1867,7 +1867,7 @@
     },
 
     "cvt_ue8m0x2_f32": {
-      "semantics": {
+      "behavior": {
         "effect": "dst = pack2(convert(src0_f32), convert(src1_f32)) (ue8m0x2 destination)",
         "note": ["frnd3 selects rounding mode for ue8m0x2: rz/rp.", "satfinite is optional for ue8m0x2 destination conversions."],
       },
@@ -1892,7 +1892,7 @@
     },
 
     "cvt_ue8m0x2_bf16x2": {
-      "semantics": {
+      "behavior": {
         "effect": "dst = pack2(convert(src0_lane0), convert(src0_lane1)) (ue8m0x2 destination, bf16x2 source)",
         "note": ["frnd3 selects rounding mode: rz/rp.", "satfinite is optional for ue8m0x2 destination conversions."],
       },
@@ -1916,7 +1916,7 @@
     },
 
     "cvt_bf16x2_ue8m0x2": {
-      "semantics": {
+      "behavior": {
         "effect": "dst = pack2(convert(src0_lane0), convert(src0_lane1)) (bf16x2 destination, ue8m0x2 source)",
         "note": ["Rounding is rn (fixed) per PTX cvt.rn.bf16x2.ue8m0x2."],
       },
@@ -1932,7 +1932,7 @@
     },
 
     "cvt_s2f6x2_f32": {
-      "semantics": {
+      "behavior": {
         "effect": "dst = pack2(convert(src0_f32 / scale0), convert(src1_f32 / scale1)) (s2f6x2 destination)",
         "note": [
           "satfinite is mandatory for s2f6x2 destination conversions (fixed enabled in this instruction).",
@@ -1973,7 +1973,7 @@
     },
 
     "cvt_s2f6x2_bf16x2": {
-      "semantics": {
+      "behavior": {
         "effect": "dst = pack2(convert(src0_lane0 / scale0), convert(src0_lane1 / scale1)) (s2f6x2 destination, bf16x2 source)",
         "note": [
           "satfinite is mandatory for s2f6x2 destination conversions (fixed enabled in this instruction).",
@@ -2012,7 +2012,7 @@
     },
 
     "cvt_bf16x2_s2f6x2": {
-      "semantics": {
+      "behavior": {
         "effect": "dst = pack2(convert(src0_lane0) * scale0, convert(src0_lane1) * scale1) (bf16x2 destination, s2f6x2 source)",
         "note": [
           "relu applies per lane.",
@@ -2051,7 +2051,7 @@
     },
 
     "f2fp": {
-      "semantics": {
+      "behavior": {
         "effect": "SASS-like floating-point convert + pack/unpack/merge family",
         "notes": [],
         "SASS": "F2FP",
@@ -2059,7 +2059,7 @@
       "forms": [
         {
           "key": "pack_ab_fp16bf16_f32",
-          "semantics": {
+          "behavior": {
             "effect": "",
             "notes": ["Packed f32->(f16|bf16) conversion (2 lanes)."],
           },
@@ -2081,7 +2081,7 @@
         {
           "key": "merge_c_fp16bf16_f32",
           "mnemonic": "F2FP{.relu}{.satfinite}.(F16|BF16).F32.MERGE_C{.RZ} dst, src0, merge_c",
-          "semantics": {
+          "behavior": {
             "effect": "dst = merge(convert(src0_f32), merge_c)",
             "notes": ["Scalar f32->(f16|bf16) conversion merged with a 32-bit container operand."],
           },
@@ -2103,7 +2103,7 @@
         {
           "key": "pack_ab_rs_fp16bf16_f32",
           "mnemonic": "F2FP{.relu}{.satfinite}.(F16|BF16).F32.PACK_AB.RS dst, src0, src1, rbits",
-          "semantics": {
+          "behavior": {
             "effect": "dst = pack2_rs(convert(src0_f32), convert(src1_f32), rbits)",
             "notes": ["Stochastic rounding variant using rbits."],
           },
@@ -2119,7 +2119,7 @@
         {
           "key": "pack_b_tf32_f32",
           "mnemonic": "F2FP{.relu}{.satfinite}.TF32.F32.PACK_B{.RZ} dst, src0",
-          "semantics": {
+          "behavior": {
             "effect": "dst = convert_tf32(src0_f32)",
             "notes": [
               "Deterministic TF32 rounding modes use this form.",
@@ -2143,7 +2143,7 @@
         {
           "key": "pack_ab_merge_c_fp8x2_f32",
           "mnemonic": "F2FP.SATFINITE{.relu}.(E4M3|E5M2).F32.PACK_AB_MERGE_C dst, src0, src1, merge_c",
-          "semantics": {
+          "behavior": {
             "effect": "dst = pack2(convert(src0_f32), convert(src1_f32)) (fp8x2 destination) and merge with merge_c",
           },
           "local_modifier_defs": {
@@ -2166,7 +2166,7 @@
         {
           "key": "pack_ab_merge_c_fp6x2_f32",
           "mnemonic": "F2FP.SATFINITE{.relu}.(E2M3|E3M2).F32.PACK_AB_MERGE_C dst, src0, src1, merge_c",
-          "semantics": {
+          "behavior": {
             "effect": "dst = pack2(convert(src0_f32), convert(src1_f32)) (fp6x2 destination) and merge with merge_c",
           },
           "local_modifier_defs": {
@@ -2189,7 +2189,7 @@
         {
           "key": "pack_ab_merge_c_fp4x2_f32",
           "mnemonic": "F2FP.SATFINITE{.relu}.E2M1.F32.PACK_AB_MERGE_C dst, src0, src1, merge_c",
-          "semantics": {
+          "behavior": {
             "effect": "dst = pack2(convert(src0_f32), convert(src1_f32)) (fp4x2 destination) and merge with merge_c",
           },
           "inst_modifiers": ["ftz", "relu", "satfinite"],
@@ -2204,7 +2204,7 @@
         {
           "key": "unpack_b_merge_c_fp8x2_fp16bf16x2",
           "mnemonic": "F2FP.SATFINITE{.relu}.(E4M3|E5M2).(F16|BF16).UNPACK_B_MERGE_C dst, src0, merge_c",
-          "semantics": {
+          "behavior": {
             "effect": "dst = pack2(convert(src0_lane0), convert(src0_lane1)) (fp8x2 destination) and merge with merge_c",
           },
           "local_modifier_defs": {
@@ -2226,7 +2226,7 @@
         {
           "key": "unpack_b_merge_c_fp6x2_fp16bf16x2",
           "mnemonic": "F2FP.SATFINITE{.relu}.(E2M3|E3M2).(F16|BF16).UNPACK_B_MERGE_C dst, src0, merge_c",
-          "semantics": {
+          "behavior": {
             "effect": "dst = pack2(convert(src0_lane0), convert(src0_lane1)) (fp6x2 destination) and merge with merge_c",
           },
           "local_modifier_defs": {
@@ -2248,7 +2248,7 @@
         {
           "key": "unpack_b_merge_c_fp4x2_fp16bf16x2",
           "mnemonic": "F2FP.SATFINITE{.relu}.E2M1.(F16|BF16).UNPACK_B_MERGE_C dst, src0, merge_c",
-          "semantics": {
+          "behavior": {
             "effect": "dst = pack2(convert(src0_lane0), convert(src0_lane1)) (fp4x2 destination) and merge with merge_c",
           },
           "inst_modifiers": ["type_fp16_bf16", "relu", "satfinite"],
@@ -2262,7 +2262,7 @@
         {
           "key": "unpack_b_f16x2_from_fp8x2",
           "mnemonic": "F2FP{.relu}.F16.(E4M3|E5M2).UNPACK_B dst, src0",
-          "semantics": {
+          "behavior": {
             "effect": "dst = pack2(convert(src0_lane0), convert(src0_lane1)) (f16x2 destination)",
           },
           "local_modifier_defs": {
@@ -2282,7 +2282,7 @@
         {
           "key": "unpack_b_f16x2_from_fp6x2",
           "mnemonic": "F2FP{.relu}.F16.(E2M3|E3M2).UNPACK_B dst, src0",
-          "semantics": {
+          "behavior": {
             "effect": "dst = pack2(convert(src0_lane0), convert(src0_lane1)) (f16x2 destination)",
           },
           "local_modifier_defs": {
@@ -2302,7 +2302,7 @@
         {
           "key": "unpack_b_f16x2_from_fp4x2",
           "mnemonic": "F2FP{.relu}.F16.E2M1.UNPACK_B dst, src0",
-          "semantics": {
+          "behavior": {
             "effect": "dst = pack2(convert(src0_lane0), convert(src0_lane1)) (f16x2 destination)",
           },
           "inst_modifiers": ["relu"],
@@ -2315,7 +2315,7 @@
         {
           "key": "pack_ab_merge_c_ue8m0x2_f32",
           "mnemonic": "F2FP.SATFINITE.UE8M0x2.F32.PACK_AB_MERGE_C{.RZ|.RP} dst, src0, src1, merge_c",
-          "semantics": {
+          "behavior": {
             "effect": "dst = pack2(convert(src0_f32), convert(src1_f32)) (ue8m0x2 destination) and merge with merge_c",
           },
           "local_modifier_defs": {
@@ -2338,7 +2338,7 @@
         {
           "key": "unpack_b_merge_c_ue8m0x2_bf16x2",
           "mnemonic": "F2FP.SATFINITE.UE8M0x2.BF16.UNPACK_B_MERGE_C{.RZ|.RP} dst, src0, merge_c",
-          "semantics": {
+          "behavior": {
             "effect": "dst = pack2(convert(src0_lane0), convert(src0_lane1)) (ue8m0x2 destination) and merge with merge_c",
           },
           "local_modifier_defs": {
@@ -2360,7 +2360,7 @@
         {
           "key": "unpack_b_bf16x2_from_ue8m0x2",
           "mnemonic": "F2FP{.relu}.BF16.UE8M0x2.UNPACK_B dst, src0",
-          "semantics": {
+          "behavior": {
             "effect": "dst = pack2(convert(src0_lane0), convert(src0_lane1)) (bf16x2 destination)",
           },
           "inst_modifiers": ["relu"],
@@ -2373,7 +2373,7 @@
         {
           "key": "pack_ab_merge_c_s2f6x2_f32",
           "mnemonic": "F2FP.SATFINITE{.relu}.S2F6x2.F32.PACK_AB_MERGE_C dst, src0, src1, scale_factor",
-          "semantics": {
+          "behavior": {
             "effect": "dst = pack2(convert(src0_f32 / scale0), convert(src1_f32 / scale1)) (s2f6x2 destination)",
             "notes": ["scale_factor packs two ue8m0 values (scale0/scale1)."],
           },
@@ -2397,7 +2397,7 @@
         {
           "key": "unpack_b_merge_c_s2f6x2_bf16x2",
           "mnemonic": "F2FP.SATFINITE{.relu}.S2F6x2.BF16.UNPACK_B_MERGE_C dst, src0, scale_factor",
-          "semantics": {
+          "behavior": {
             "effect": "dst = pack2(convert(src0_lane0 / scale0), convert(src0_lane1 / scale1)) (s2f6x2 destination)",
           },
           "local_modifier_defs": {
@@ -2419,7 +2419,7 @@
         {
           "key": "unpack_b_bf16x2_from_s2f6x2",
           "mnemonic": "F2FP{.relu}.BF16.S2F6x2.UNPACK_B dst, src0, scale_factor",
-          "semantics": {
+          "behavior": {
             "effect": "dst = pack2(convert(src0_lane0) * scale0, convert(src0_lane1) * scale1) (bf16x2 destination)",
           },
           "local_modifier_defs": {
@@ -2445,7 +2445,7 @@
     /* Miscellaneous Instructions */
     ////////////////////////////////
     "nop": {
-      "semantics": {
+      "behavior": {
         // Some comments for future reference
         "effect": "no operation",
       },

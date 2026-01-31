@@ -100,7 +100,7 @@ modifier_defs 的命名不允许跨层级重复：任意 local_modifier_defs 中
 - meaning: 可选项。modifier 的含义描述，可以是字符串（""）或字符串列表（["",""]）。
 
 键值对 instructions 定义了具体的指令集。其内部的每个键值对，key 是指令的名称，其 value object 描述指令的具体信息，包含以下字段：
-- semantics: 可选项。指令的语义描述，包含以下字段（以下字段均为可选项）：
+- behavior: 可选项。指令的语义描述，包含以下字段（以下字段均为可选项）：
   - effect: 指令的效果描述，是一个字符串。
   - SASS: 指令在 NVIDIA SASS 中的参考名称，可以是字符串或字符串列表。并非一一对应。
   - notes: 指令的额外说明，是一个字符串列表。
@@ -109,7 +109,7 @@ modifier_defs 的命名不允许跨层级重复：任意 local_modifier_defs 中
 - fixed_modifiers: 可选项。modifier 列表，只能包含 global_modifier_defs 和本指令 local_modifier_defs 中定义的 modifier。且必须在同级的 forms 内部的每一个子项中，使用 fixed_modi_vals 指定值。用于将不同 form 以 modifier 的不同取值的形式区分开来。同一个 modifier 不允许同时出现在 inst_modifiers 和 fixed_modifiers 中。
   - 若某一层定义了 fixed_modifiers，则该层 forms 对象中的每一个子项必须提供 fixed_modi_vals（见下），但其键集合不需要覆盖 fixed_modifiers 的所有组合范围，取值必须为对应 modifier 的 enum label。
 - forms: 必须项。指令的具体编码形式对象，代表同一个指令下的不同 encoding 形式，不同 form 的操作数数量、功能等可能不同。其 key 为 form 的唯一标识符，value 为一个 object，包含以下字段：
-  - semantics: 可选项。该 form 的语义描述，格式同上级 instruction 的 semantics。
+  - behavior: 可选项。该 form 的语义描述，格式同上级 instruction 的 behavior。
   - fixed_modi_vals: 当本指令有 fixed_modifiers 时，必须项，否则不应定义。用于指定本 form 中每个 fixed_modifiers 的取值。是一个 object，其键名为 fixed_modifiers 中的 modifier 名称，值为该 modifier 在本 form 中的取值。
   - local_modifier_defs: 可选项。该 form 特有的 modifier 定义，格式同 global_modifier_defs，且名称不得与 global_modifier_defs 或任意上级 local_modifier_defs 重名。
   - inst_modifiers: 可选项。该 form 使用的 modifier 列表。可以包含 global_modifier_defs、本指令 local_modifier_defs 以及本 form local_modifier_defs 中定义的 modifier。不能包含上级 inst_modifiers 和 fixed_modifiers 中的 modifier。

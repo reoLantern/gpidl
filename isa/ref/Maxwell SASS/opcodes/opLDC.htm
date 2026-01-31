@@ -45,26 +45,32 @@ SPA 5.0:
 <p>
 Move constant (which might be indexed) into destination. This is a bit-wise
 move. <b>LDC</b> always uses the indexed C$, not the immediate C$,
-and supports 8-bit to 128-bit loads.</p>
+and supports 8-bit to 128-bit loads.<br>
+将 constant（可能是 indexed）移动到目的寄存器。这是按位的 move。<b>LDC</b> 总是使用 indexed C$，而不是 immediate C$，并支持 8-bit 到 128-bit 的 loads。</p>
 <p>
 If Ra is not specified or Ra is RZ, the address is an <b>unsigned</b> 16-bit
 immediate. If Ra is specified and is not RZ, the address is the sum of register
-Ra and an 16b <b>signed</b> immediate.</p>
+Ra and an 16b <b>signed</b> immediate.<br>
+如果未指定 Ra 或 Ra 为 RZ，则地址是 <b>unsigned</b> 的 16-bit immediate。如果指定了 Ra 且 Ra 不是 RZ，则地址为寄存器 Ra 与 16b <b>signed</b> immediate 之和。</p>
 <p>
-Source Ra is unsigned and in bytes, immediate is in bytes.</p>
+Source Ra is unsigned and in bytes, immediate is in bytes.<br>
+Source Ra 为 unsigned 并按 bytes 计，immediate 也按 bytes 计。</p>
 <p>
 The constant bank is given by #ImmU05. There are a maximum of 32
 constant banks of size 64 KB each. Out of bounds addresses result in 0s being
 written back.
-</p>
+<br>
+constant bank 由 #ImmU05 指定。最多有 32 个 constant banks，每个大小为 64 KB。越界地址会回写 0。</p>
 <p>
 The address calculation math wraps silently at 32-bits.
 The hardware supports up to 18 banks (8 in Compute), and 
 will return 0 for unsupported banks.
-</p>
+<br>
+地址计算在 32-bits 处静默回绕。硬件最多支持 18 个 banks（Compute 中为 8 个），对不支持的 banks 会返回 0。</p>
 
 <p>
-There are three address behaviours for LDC with an indexed address:</p>
+There are three address behaviours for LDC with an indexed address:<br>
+带 indexed address 的 LDC 有三种 address 行为：</p>
 <pre>
   <b>00: IA</b>                                 <span style="color: green">// DX10 Mode, Default</span>
       bank = #ImmU05;
@@ -87,9 +93,11 @@ There are three address behaviours for LDC with an indexed address:</p>
 
 <p>
 The suffix .sz specifies the size in bits to load from memory.  Sizes
-require register destination alignment and address alignment.</p>
+require register destination alignment and address alignment.<br>
+后缀 .sz 指定从 memory 加载的位数大小。尺寸要求目的寄存器对齐和地址对齐。</p>
 <p>
-Misaligned addresses/register will result in an error.</p>
+Misaligned addresses/register will result in an error.<br>
+地址或寄存器未对齐会导致错误。</p>
 
 <!-- ############################### -->
 <!-- # Additional Information      # -->
@@ -103,7 +111,8 @@ access bank 8 or higher the hardware provides no additional
 bounds-checking (aside from the the 14-bank limit of <b>LDC.IS</b>)
 and results are unpredictable.
 For DirectCompute, the driver must emulate support for the upper banks and
-provide bounds-checking in software.</p>
+provide bounds-checking in software.<br>
+Compute 模式下只能访问 8 个 constant banks。当尝试访问 bank 8 或更高时，硬件不会提供额外的 bounds-checking（除了 <b>LDC.IS</b> 的 14-bank 限制），结果不可预测。对于 DirectCompute，driver 必须模拟对更高 banks 的支持，并在软件中提供 bounds-checking。</p>
 </div>
 
 

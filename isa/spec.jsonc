@@ -3,7 +3,7 @@
 
   "operand_width_bits": { "vreg": 8, "sreg": 8, "pred": 2, "imm32": 32, "imm24": 24, "imm16": 16, "imm12": 12, "imm8": 8, "imm5": 5 },
 
-  "canonical_roles": ["dst", "src0", "src1", "src2", "src3", "pout0", "pout1", "pin0"],
+  "canonical_roles": ["dst", "src0", "src1", "src2", "imme", "pout0", "pout1", "pin0"],
 
   "global_oprnd_flag_defs": {
     // Operand flags are per-operand modifiers,
@@ -183,7 +183,7 @@
       "bits": 1,
       "enum": { "DISABLE": 0, "NaN": 1 },
       "default": "DISABLE",
-      "can_apply_to_inst": ["fmnmx", "hmnmx_pk", "fmnmx3"],
+      // "can_apply_to_inst": ["fmnmx", "hmnmx_pk", "fmnmx3"],
       "meaning": "If .NaN modifier is specified, then the result is canonical NaN if any of the inputs is NaN.",
     },
     "xorsign": {
@@ -251,11 +251,11 @@
     /////////////////////////////////
     /* Floating Point Instructions */
     /////////////////////////////////
-    "fadd": {
-      "semantics": {
+    "v_fadd": {
+      "behavior": {
         "effect": "dst = src0 + src1",
         "SASS": "FADD",
-        "notes": ["floating-point addition"],
+        "notes": ["floating-point addition (FP32)"],
       },
       "inst_modifiers": ["rnd_mode_fp", "ftz", "saturate"],
       "forms": {
@@ -282,47 +282,8 @@
         },
       },
     },
-    "hadd_pk": {
-      "semantics": {
-        "effect": "dst = pack_add(src0, src1)",
-        "SASS": "HADD2",
-        "notes": ["floating-point half-precision (FP16/BF16) packed addition"],
-      },
-      "inst_modifiers": ["ftz", "saturate", "type_fp16_bf16"],
-      "forms": {
-        "v_vv": {
-          "operands": [
-            { "name": "dst", "role": "dst", "kind": "vreg" },
-            { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
-            { "name": "src1", "role": "src1", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
-          ],
-        },
-        "v_vi": {
-          "operands": [
-            { "name": "dst", "role": "dst", "kind": "vreg" },
-            { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
-            { "name": "src1", "role": "src1", "kind": "imm16" },
-          ],
-        },
-        "v_vii": {
-          "operands": [
-            { "name": "dst", "role": "dst", "kind": "vreg" },
-            { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
-            { "name": "src1", "role": "src1", "kind": "imm16" },
-            { "name": "src2", "role": "src2", "kind": "imm16" },
-          ],
-        },
-        "v_vx": {
-          "operands": [
-            { "name": "dst", "role": "dst", "kind": "vreg" },
-            { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
-            { "name": "src1", "role": "src1", "kind": "sreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
-          ],
-        },
-      },
-    },
-    "ffma": {
-      "semantics": {
+    "v_ffma": {
+      "behavior": {
         "effect": "dst = src0 * src1 + src2",
         "SASS": "FFMA",
         "notes": ["floating-point fused multiply-add"],
@@ -403,58 +364,8 @@
         },
       },
     },
-    "hma_pk": {
-      "semantics": {
-        "effect": "dst = src0 * src1 + src2",
-        "SASS": "HFMA2",
-        "notes": ["floating-point half-precision (FP16/BF16) packed fused multiply-add"],
-      },
-      "inst_modifiers": ["ftz", "fmz", "saturate", "type_fp16_bf16"],
-      "forms": {
-        "v_vvv": {
-          "operands": [
-            { "name": "dst", "role": "dst", "kind": "vreg" },
-            { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
-            { "name": "src1", "role": "src1", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel_B32"] },
-            { "name": "src2", "role": "src2", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
-          ],
-        },
-        "v_vvi": {
-          "operands": [
-            { "name": "dst", "role": "dst", "kind": "vreg" },
-            { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
-            { "name": "src1", "role": "src1", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel_B32"] },
-            { "name": "src2", "role": "src2", "kind": "imm32" },
-          ],
-        },
-        "v_viv": {
-          "operands": [
-            { "name": "dst", "role": "dst", "kind": "vreg" },
-            { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
-            { "name": "src1", "role": "src1", "kind": "imm32" },
-            { "name": "src2", "role": "src2", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
-          ],
-        },
-        "v_vxv": {
-          "operands": [
-            { "name": "dst", "role": "dst", "kind": "vreg" },
-            { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
-            { "name": "src1", "role": "src1", "kind": "sreg", "oprnd_flag": ["src_fp_modi", "packed_opsel_B32"] },
-            { "name": "src2", "role": "src2", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
-          ],
-        },
-        "v_vvx": {
-          "operands": [
-            { "name": "dst", "role": "dst", "kind": "vreg" },
-            { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
-            { "name": "src1", "role": "src1", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel_B32"] },
-            { "name": "src2", "role": "src2", "kind": "sreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
-          ],
-        },
-      },
-    },
     "fmnmx": {
-      "semantics": {
+      "behavior": {
         "effect": "d = (mn_mx == MIN) ? min(a,b) : max(a,b)",
         "SASS": "FMNMX",
         "notes": ["FP32 min/max with predicate"],
@@ -519,72 +430,43 @@
         },
       },
     },
-    "fmnmx3": {
-      "semantics": {
-        "effect": "d = (mn_mx == MIN) ? min(a,b,c) : max(a,b,c);",
-        "SASS": "FMNMX3",
-        "notes": ["FP32 3-operand min/max with predicate"],
-      },
-      "inst_modifiers": ["NaN", "mn_mx"],
-      "forms": {
-        "v_vvv": {
-          "operands": [
-            { "name": "dst", "role": "dst", "kind": "vreg" },
-            { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi"] },
-            { "name": "src1", "role": "src1", "kind": "vreg", "oprnd_flag": ["src_fp_modi"] },
-            { "name": "src2", "role": "src2", "kind": "vreg", "oprnd_flag": ["src_fp_modi"] },
-          ],
-        },
-        "v_vvi": {
-          "operands": [
-            { "name": "dst", "role": "dst", "kind": "vreg" },
-            { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi"] },
-            { "name": "src1", "role": "src1", "kind": "vreg", "oprnd_flag": ["src_fp_modi"] },
-            { "name": "src2", "role": "src2", "kind": "imm32" },
-          ],
-        },
-        "v_vvx": {
-          "operands": [
-            { "name": "dst", "role": "dst", "kind": "vreg" },
-            { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi"] },
-            { "name": "src1", "role": "src1", "kind": "vreg", "oprnd_flag": ["src_fp_modi"] },
-            { "name": "src2", "role": "src2", "kind": "sreg", "oprnd_flag": ["src_fp_modi"] },
-          ],
-        },
-      },
-    },
-    "hmnmx_pk": {
-      "semantics": {
-        "effect": "dst = pack_mnmx(src0, src1)",
-        "SASS": "HMNMX2",
-      },
-      "inst_modifiers": ["ftz", "fmz", "saturate", "type_fp16_bf16", "xorsign", "NaN", "mn_mx"],
-      "forms": {
-        "v_vv": {
-          "operands": [
-            { "name": "dst", "role": "dst", "kind": "vreg" },
-            { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
-            { "name": "src1", "role": "src1", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
-          ],
-        },
-        "v_vi": {
-          "operands": [
-            { "name": "dst", "role": "dst", "kind": "vreg" },
-            { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
-            { "name": "src1", "role": "src1", "kind": "imm32" },
-          ],
-        },
-        "v_vx": {
-          "operands": [
-            { "name": "dst", "role": "dst", "kind": "vreg" },
-            { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
-            { "name": "src1", "role": "src1", "kind": "sreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
-          ],
-        },
-      },
-    },
+    // "fmnmx3": {
+    //   "behavior": {
+    //     "effect": "d = (mn_mx == MIN) ? min(a,b,c) : max(a,b,c);",
+    //     "SASS": "FMNMX3",
+    //     "notes": ["FP32 3-operand min/max with predicate"],
+    //   },
+    //   "inst_modifiers": ["NaN", "mn_mx"],
+    //   "forms": {
+    //     "v_vvv": {
+    //       "operands": [
+    //         { "name": "dst", "role": "dst", "kind": "vreg" },
+    //         { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi"] },
+    //         { "name": "src1", "role": "src1", "kind": "vreg", "oprnd_flag": ["src_fp_modi"] },
+    //         { "name": "src2", "role": "src2", "kind": "vreg", "oprnd_flag": ["src_fp_modi"] },
+    //       ],
+    //     },
+    //     "v_vvi": {
+    //       "operands": [
+    //         { "name": "dst", "role": "dst", "kind": "vreg" },
+    //         { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi"] },
+    //         { "name": "src1", "role": "src1", "kind": "vreg", "oprnd_flag": ["src_fp_modi"] },
+    //         { "name": "src2", "role": "src2", "kind": "imm32" },
+    //       ],
+    //     },
+    //     "v_vvx": {
+    //       "operands": [
+    //         { "name": "dst", "role": "dst", "kind": "vreg" },
+    //         { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi"] },
+    //         { "name": "src1", "role": "src1", "kind": "vreg", "oprnd_flag": ["src_fp_modi"] },
+    //         { "name": "src2", "role": "src2", "kind": "sreg", "oprnd_flag": ["src_fp_modi"] },
+    //       ],
+    //     },
+    //   },
+    // },
+
     "fmul": {
-      "semantics": {
+      "behavior": {
         "effect": "dst = src0 * src1 (floating-point multiplication)",
         "SASS": "FMUL",
       },
@@ -613,40 +495,11 @@
         },
       },
     },
-    "hmul_pk": {
-      "semantics": {
-        "effect": "dst = pack_mul(src0, src1) (floating-point packed multiplication)",
-        "SASS": "HMUL2",
-      },
-      "inst_modifiers": ["ftz", "fmz", "saturate", "type_fp16_bf16"],
-      "forms": {
-        "v_vv": {
-          "operands": [
-            { "name": "dst", "role": "dst", "kind": "vreg" },
-            { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
-            { "name": "src1", "role": "src1", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
-          ],
-        },
-        "v_vi": {
-          "operands": [
-            { "name": "dst", "role": "dst", "kind": "vreg" },
-            { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
-            { "name": "src1", "role": "src1", "kind": "imm32" },
-          ],
-        },
-        "v_vx": {
-          "operands": [
-            { "name": "dst", "role": "dst", "kind": "vreg" },
-            { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
-            { "name": "src1", "role": "src1", "kind": "sreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
-          ],
-        },
-      },
-    },
     "fsel": {
-      "semantics": {
+      "behavior": {
         "effect": "dst = pin0 ? src0 : src1 (floating-point select)",
         "SASS": "FSEL",
+        "notes": [".ftz: denorm output is flushed to zero."],
       },
       "inst_modifiers": ["ftz"],
       "forms": {
@@ -677,7 +530,7 @@
       },
     },
     "fcmp": {
-      "semantics": {
+      "behavior": {
         "effect": "pout/dst = ((src0 CMP src1) ? 1 : 0) pred_comb pin0 (floating-point compare)",
         "notes": [
           "BoolFM 只在写回 per-thread register 时生效：当其为 BM，写回 0xffffffff / 0x0；当其为 BF，写回 1.0 / 0.0。",
@@ -687,7 +540,7 @@
       "inst_modifiers": ["fp_cmp_type", "pred_comb"],
       "forms": {
         "fset": {
-          "semantics": {
+          "behavior": {
             "SASS": "FSET",
           },
           "forms": {
@@ -721,7 +574,7 @@
           },
         },
         "fsetp": {
-          "semantics": {
+          "behavior": {
             "SASS": ["FSETP"],
           },
           "forms": {
@@ -777,8 +630,203 @@
         },
       },
     },
+    "fsf": {
+      "behavior": {
+        "effect": "dst = SFU_function(src0) (floating-point special function)",
+        "SASS": "MUFU",
+      },
+      "local_modifier_defs": {
+        "sfu_func": {
+          "bits": 4,
+          "enum": {
+            "COS": 0,
+            "SIN": 1,
+            "EX2": 2,
+            "LG2": 3,
+            "RCP": 4,
+            "RSQ": 5,
+            "SQRT": 6,
+          },
+          "meaning": "Select the concrete special function for special function ops.",
+        },
+      },
+      "inst_modifiers": ["sfu_func"],
+      "forms": {
+        "v_v": {
+          "operands": [
+            { "name": "dst", "role": "dst", "kind": "vreg" },
+            { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi"] },
+          ],
+        },
+        "v_x": {
+          "operands": [
+            { "name": "dst", "role": "dst", "kind": "vreg" },
+            { "name": "src0", "role": "src0", "kind": "sreg", "oprnd_flag": ["src_fp_modi"] },
+          ],
+        },
+        "v_i": {
+          "operands": [
+            { "name": "dst", "role": "dst", "kind": "vreg" },
+            { "name": "src0", "role": "src0", "kind": "imm32" },
+          ],
+        },
+      },
+    },
+
+    ////////////////////////////////////////////////
+    /* Half-Precision Floating Point Instructions */
+    ////////////////////////////////////////////////
+    "hadd_pk": {
+      "behavior": {
+        "effect": "dst = pack_add(src0, src1)",
+        "SASS": "HADD2",
+        "notes": ["floating-point half-precision (FP16/BF16) packed addition"],
+      },
+      "inst_modifiers": ["ftz", "saturate", "type_fp16_bf16"],
+      "forms": {
+        "v_vv": {
+          "operands": [
+            { "name": "dst", "role": "dst", "kind": "vreg" },
+            { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
+            { "name": "src1", "role": "src1", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
+          ],
+        },
+        "v_vi": {
+          "operands": [
+            { "name": "dst", "role": "dst", "kind": "vreg" },
+            { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
+            { "name": "src1", "role": "src1", "kind": "imm16" },
+          ],
+        },
+        "v_vii": {
+          "operands": [
+            { "name": "dst", "role": "dst", "kind": "vreg" },
+            { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
+            { "name": "src1", "role": "src1", "kind": "imm16" },
+            { "name": "src2", "role": "src2", "kind": "imm16" },
+          ],
+        },
+        "v_vx": {
+          "operands": [
+            { "name": "dst", "role": "dst", "kind": "vreg" },
+            { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
+            { "name": "src1", "role": "src1", "kind": "sreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
+          ],
+        },
+      },
+    },
+    "hma_pk": {
+      "behavior": {
+        "effect": "dst = src0 * src1 + src2",
+        "SASS": "HFMA2",
+        "notes": ["floating-point half-precision (FP16/BF16) packed fused multiply-add"],
+      },
+      "inst_modifiers": ["ftz", "fmz", "saturate", "type_fp16_bf16"],
+      "forms": {
+        "v_vvv": {
+          "operands": [
+            { "name": "dst", "role": "dst", "kind": "vreg" },
+            { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
+            { "name": "src1", "role": "src1", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel_B32"] },
+            { "name": "src2", "role": "src2", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
+          ],
+        },
+        "v_vvi": {
+          "operands": [
+            { "name": "dst", "role": "dst", "kind": "vreg" },
+            { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
+            { "name": "src1", "role": "src1", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel_B32"] },
+            { "name": "src2", "role": "src2", "kind": "imm32" },
+          ],
+        },
+        "v_viv": {
+          "operands": [
+            { "name": "dst", "role": "dst", "kind": "vreg" },
+            { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
+            { "name": "src1", "role": "src1", "kind": "imm32" },
+            { "name": "src2", "role": "src2", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
+          ],
+        },
+        "v_vxv": {
+          "operands": [
+            { "name": "dst", "role": "dst", "kind": "vreg" },
+            { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
+            { "name": "src1", "role": "src1", "kind": "sreg", "oprnd_flag": ["src_fp_modi", "packed_opsel_B32"] },
+            { "name": "src2", "role": "src2", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
+          ],
+        },
+        "v_vvx": {
+          "operands": [
+            { "name": "dst", "role": "dst", "kind": "vreg" },
+            { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
+            { "name": "src1", "role": "src1", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel_B32"] },
+            { "name": "src2", "role": "src2", "kind": "sreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
+          ],
+        },
+      },
+    },
+    "hmnmx_pk": {
+      "behavior": {
+        "effect": "dst = pack_mnmx(src0, src1)",
+        "SASS": "HMNMX2",
+      },
+      "inst_modifiers": ["ftz", "fmz", "saturate", "type_fp16_bf16", "xorsign", "NaN", "mn_mx"],
+      "forms": {
+        "v_vv": {
+          "operands": [
+            { "name": "dst", "role": "dst", "kind": "vreg" },
+            { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
+            { "name": "src1", "role": "src1", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
+          ],
+        },
+        "v_vi": {
+          "operands": [
+            { "name": "dst", "role": "dst", "kind": "vreg" },
+            { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
+            { "name": "src1", "role": "src1", "kind": "imm32" },
+          ],
+        },
+        "v_vx": {
+          "operands": [
+            { "name": "dst", "role": "dst", "kind": "vreg" },
+            { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
+            { "name": "src1", "role": "src1", "kind": "sreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
+          ],
+        },
+      },
+    },
+    "hmul_pk": {
+      "behavior": {
+        "effect": "dst = pack_mul(src0, src1) (floating-point packed multiplication)",
+        "SASS": "HMUL2",
+      },
+      "inst_modifiers": ["ftz", "fmz", "saturate", "type_fp16_bf16"],
+      "forms": {
+        "v_vv": {
+          "operands": [
+            { "name": "dst", "role": "dst", "kind": "vreg" },
+            { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
+            { "name": "src1", "role": "src1", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
+          ],
+        },
+        "v_vi": {
+          "operands": [
+            { "name": "dst", "role": "dst", "kind": "vreg" },
+            { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
+            { "name": "src1", "role": "src1", "kind": "imm32" },
+          ],
+        },
+        "v_vx": {
+          "operands": [
+            { "name": "dst", "role": "dst", "kind": "vreg" },
+            { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
+            { "name": "src1", "role": "src1", "kind": "sreg", "oprnd_flag": ["src_fp_modi", "packed_opsel"] },
+          ],
+        },
+      },
+    },
     "hcmp_pk": {
-      "semantics": {
+      "behavior": {
         "effect": "pout/dst = ((src0 CMP src1) ? 1 : 0) pred_comb pin0 (floating-point packed compare)",
         "notes": [
           "Compare two packed FP16/BF16 values within 32-bit registers.",
@@ -790,7 +838,7 @@
       "inst_modifiers": ["ftz", "fp_cmp_type", "pred_comb", "type_fp16_bf16"],
       "forms": {
         "hset2": {
-          "semantics": {
+          "behavior": {
             "SASS": "HSET2",
           },
           "forms": {
@@ -850,7 +898,7 @@
           },
         },
         "hsetp2": {
-          "semantics": {
+          "behavior": {
             "SASS": ["HSETP2"],
           },
           "forms": {
@@ -886,54 +934,12 @@
         },
       },
     },
-    "fsf": {
-      "semantics": {
-        "effect": "dst = SFU_function(src0) (floating-point special function)",
-        "SASS": "MUFU",
-      },
-      "local_modifier_defs": {
-        "sfu_func": {
-          "bits": 4,
-          "enum": {
-            "COS": 0,
-            "SIN": 1,
-            "EX2": 2,
-            "LG2": 3,
-            "RCP": 4,
-            "RSQ": 5,
-            "SQRT": 6,
-          },
-          "meaning": "Select the concrete special function for special function ops.",
-        },
-      },
-      "inst_modifiers": ["sfu_func"],
-      "forms": {
-        "v_v": {
-          "operands": [
-            { "name": "dst", "role": "dst", "kind": "vreg" },
-            { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_fp_modi"] },
-          ],
-        },
-        "v_x": {
-          "operands": [
-            { "name": "dst", "role": "dst", "kind": "vreg" },
-            { "name": "src0", "role": "src0", "kind": "sreg", "oprnd_flag": ["src_fp_modi"] },
-          ],
-        },
-        "v_i": {
-          "operands": [
-            { "name": "dst", "role": "dst", "kind": "vreg" },
-            { "name": "src0", "role": "src0", "kind": "imm32" },
-          ],
-        },
-      },
-    },
 
     //////////////////////////
     /* Integer Instructions */
     //////////////////////////
     "bmsk": {
-      "semantics": {
+      "behavior": {
         "effect": "dst = ((1 << src0[4:0].u32) - 1) << src1[4:0].u32",
         "SASS": "BMSK",
         "notes": ["Generate a bitmask with length and position specified."],
@@ -971,7 +977,7 @@
       },
     },
     "brev": {
-      "semantics": {
+      "behavior": {
         "effect": "dst = bit_reverse(src0) (bitwise reverse)",
         "SASS": "BREV",
       },
@@ -997,7 +1003,7 @@
       },
     },
     "flo": {
-      "semantics": {
+      "behavior": {
         "effect": "dst = first_leading_one(src0) (find first leading one from LSB)",
         "SASS": "FLO",
       },
@@ -1024,7 +1030,7 @@
       },
     },
     "iabs": {
-      "semantics": {
+      "behavior": {
         "effect": "dst = abs(src0) (integer absolute value)",
         "SASS": "IABS",
       },
@@ -1049,50 +1055,87 @@
         },
       },
     },
-    "iadd3": {
-      "semantics": {
-        "effect": "dst = src0 + src1 + src2 (3-input Integer Addition)",
+    "iadd": {
+      "behavior": {
+        "effect": "dst = src0 + src1",
         "SASS": "IADD3",
+        "notes": ["SASS IADD3 为 3-input integer addition，此处为 2-input addition"],
       },
       "fixed_modifiers": ["ccin"],
       "forms": {
-        "vpp_vvv": {
+        "vp_vv": {
           "fixed_modi_vals": { "ccin": "DISABLE" },
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "pout0", "role": "pout0", "kind": "pred" },
-            { "name": "pout1", "role": "pout1", "kind": "pred" },
             { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_int_modi"] },
             { "name": "src1", "role": "src1", "kind": "vreg", "oprnd_flag": ["src_int_modi"] },
-            { "name": "src2", "role": "src2", "kind": "vreg", "oprnd_flag": ["src_int_modi"] },
           ],
         },
-        "vpp_vxv": {
+        "vp_vx": {
           "fixed_modi_vals": { "ccin": "DISABLE" },
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "pout0", "role": "pout0", "kind": "pred" },
-            { "name": "pout1", "role": "pout1", "kind": "pred" },
             { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_int_modi"] },
             { "name": "src1", "role": "src1", "kind": "sreg", "oprnd_flag": ["src_int_modi"] },
-            { "name": "src2", "role": "src2", "kind": "vreg", "oprnd_flag": ["src_int_modi"] },
           ],
         },
-        "vpp_viv": {
+        "vp_vi": {
           "fixed_modi_vals": { "ccin": "DISABLE" },
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "pout0", "role": "pout0", "kind": "pred" },
-            { "name": "pout1", "role": "pout1", "kind": "pred" },
             { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_int_modi"] },
             { "name": "src1", "role": "src1", "kind": "imm32" },
-            { "name": "src2", "role": "src2", "kind": "vreg", "oprnd_flag": ["src_int_modi"] },
           ],
         },
       },
     },
+    // "iadd3": {
+    //   "behavior": {
+    //     "effect": "dst = src0 + src1 + src2 (3-input Integer Addition)",
+    //     "SASS": "IADD3",
+    //   },
+    //   "fixed_modifiers": ["ccin"],
+    //   "forms": {
+    //     "vpp_vvv": {
+    //       "fixed_modi_vals": { "ccin": "DISABLE" },
+    //       "operands": [
+    //         { "name": "dst", "role": "dst", "kind": "vreg" },
+    //         { "name": "pout0", "role": "pout0", "kind": "pred" },
+    //         { "name": "pout1", "role": "pout1", "kind": "pred" },
+    //         { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_int_modi"] },
+    //         { "name": "src1", "role": "src1", "kind": "vreg", "oprnd_flag": ["src_int_modi"] },
+    //         { "name": "src2", "role": "src2", "kind": "vreg", "oprnd_flag": ["src_int_modi"] },
+    //       ],
+    //     },
+    //     "vpp_vxv": {
+    //       "fixed_modi_vals": { "ccin": "DISABLE" },
+    //       "operands": [
+    //         { "name": "dst", "role": "dst", "kind": "vreg" },
+    //         { "name": "pout0", "role": "pout0", "kind": "pred" },
+    //         { "name": "pout1", "role": "pout1", "kind": "pred" },
+    //         { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_int_modi"] },
+    //         { "name": "src1", "role": "src1", "kind": "sreg", "oprnd_flag": ["src_int_modi"] },
+    //         { "name": "src2", "role": "src2", "kind": "vreg", "oprnd_flag": ["src_int_modi"] },
+    //       ],
+    //     },
+    //     "vpp_viv": {
+    //       "fixed_modi_vals": { "ccin": "DISABLE" },
+    //       "operands": [
+    //         { "name": "dst", "role": "dst", "kind": "vreg" },
+    //         { "name": "pout0", "role": "pout0", "kind": "pred" },
+    //         { "name": "pout1", "role": "pout1", "kind": "pred" },
+    //         { "name": "src0", "role": "src0", "kind": "vreg", "oprnd_flag": ["src_int_modi"] },
+    //         { "name": "src1", "role": "src1", "kind": "imm32" },
+    //         { "name": "src2", "role": "src2", "kind": "vreg", "oprnd_flag": ["src_int_modi"] },
+    //       ],
+    //     },
+    //   },
+    // },
     "imad": {
-      "semantics": {
+      "behavior": {
         "effect": "dst = src0 * src1 + src2 (integer multiply-add)",
         "notes": [
           "signed 作用在乘法的解释上（加法是补码加法，对 signed/unsigned 没有区别）。",
@@ -1204,7 +1247,7 @@
       },
     },
     "imnmx": {
-      "semantics": {
+      "behavior": {
         "effect": "dst = (mn_mx == MIN) ? min(src0, src1) : max(src0, src1) (integer min/max)",
         "SASS": "IMNMX",
       },
@@ -1234,7 +1277,7 @@
       },
     },
     "icmp": {
-      "semantics": {
+      "behavior": {
         "effect": "pout/dst = ((src0 CMP src1) ? 1 : 0) pred_comb pin0 (integer compare)",
         "SASS": "ISETP",
         "notes": ["TODO: 检查这里的 forms 哪些是需要的"],
@@ -1268,8 +1311,8 @@
       },
     },
     "shl_add": {
-      "semantics": {
-        "effect": "dst{|pout0} = src0 + (src1 << src2) + src3 {+ pin0}",
+      "behavior": {
+        "effect": "dst{|pout0} = src0 + (src1 << src2) {+ pin0}",
         "notes": [
           "If ccin is set, the addition includes an additional carry-in bit.",
           "If opsel is set to HI, the dst is the high 32 bits of the result; otherwise, it is the low 32 bits.",
@@ -1361,7 +1404,7 @@
       },
     },
     "lop3": {
-      "semantics": {
+      "behavior": {
         "effect": "dst = lop3(src0, src1, src2, imm8)",
         "SASS": "LOP3",
       },
@@ -1372,7 +1415,7 @@
             { "name": "src0", "role": "src0", "kind": "vreg" },
             { "name": "src1", "role": "src1", "kind": "vreg" },
             { "name": "src2", "role": "src2", "kind": "vreg" },
-            { "name": "imm8", "role": "src3", "kind": "imm8" },
+            { "name": "imm8", "role": "imme", "kind": "imm8" },
           ],
         },
         "v_vxvi": {
@@ -1381,7 +1424,7 @@
             { "name": "src0", "role": "src0", "kind": "vreg" },
             { "name": "src1", "role": "src1", "kind": "sreg" },
             { "name": "src2", "role": "src2", "kind": "vreg" },
-            { "name": "imm8", "role": "src3", "kind": "imm8" },
+            { "name": "imm8", "role": "imme", "kind": "imm8" },
           ],
         },
         "v_vivi": {
@@ -1390,13 +1433,13 @@
             { "name": "src0", "role": "src0", "kind": "vreg" },
             { "name": "src1", "role": "src1", "kind": "imm32" },
             { "name": "src2", "role": "src2", "kind": "vreg" },
-            { "name": "imm8", "role": "src3", "kind": "imm8" },
+            { "name": "imm8", "role": "imme", "kind": "imm8" },
           ],
         },
       },
     },
     "popc": {
-      "semantics": {
+      "behavior": {
         "effect": "Count the number of one bits in a and place the resulting population count in 32-bit destination register d",
         "SASS": "POPC",
       },
@@ -1420,7 +1463,7 @@
     /* Conversion Instructions */
     /////////////////////////////
     "f2f": {
-      "semantics": {
+      "behavior": {
         "effect": "dst = convert(src0) (floating-point conversion)",
         "notes": [
           "dst_fp_type/src_fp_type select the source/destination scalar types.",
@@ -1458,7 +1501,7 @@
       },
     },
     "f2i": {
-      "semantics": {
+      "behavior": {
         "effect": "dst = convert_fp_to_int(src0)",
         "notes": [
           "dst_int_type/src_fp_type select the source/destination scalar types.",
@@ -1495,7 +1538,7 @@
       },
     },
     "i2f": {
-      "semantics": {
+      "behavior": {
         "effect": "dst = convert_int_to_fp(src0)",
         "notes": [
           "dst_fp_type/src_int_type select the source/destination scalar types.",
@@ -1526,7 +1569,7 @@
       },
     },
     "i2i": {
-      "semantics": {
+      "behavior": {
         "effect": "dst = convert_int_to_int(src0)",
         "notes": ["dst_int_type/src_int_type select the source/destination scalar types.", "sat clamps to the destination integer range."],
         "SASS": "I2I",
@@ -1560,7 +1603,7 @@
       },
     },
     "frnd": {
-      "semantics": {
+      "behavior": {
         "effect": "round floating-point To Integer",
         "SASS": "FRND",
       },
@@ -1598,7 +1641,7 @@
     /* Movement Instructions */
     ///////////////////////////
     "mov": {
-      "semantics": {
+      "behavior": {
         "effect": "dst = src0",
         "SASS": "MOV",
       },
@@ -1624,7 +1667,7 @@
       },
     },
     "prmt": {
-      "semantics": {
+      "behavior": {
         "effect": "dst = permute(src0, src1, src2), where src2 is the permutation control.",
         "SASS": "PRMT",
       },
@@ -1680,7 +1723,7 @@
       },
     },
     "sel": {
-      "semantics": {
+      "behavior": {
         "effect": "dst = (pin0) ? src0 : src1",
         "SASS": "SEL",
       },
@@ -1716,7 +1759,7 @@
     /* Load/Store Instructions */
     /////////////////////////////
     "LD": {
-      "semantics": {
+      "behavior": {
         "effect": "Load from generic memory",
         "notes": ["offset 与 saddr 正好凑成 32 bit encoding"],
       },
@@ -1733,7 +1776,7 @@
       },
     },
     "ST": {
-      "semantics": {
+      "behavior": {
         "effect": "Store to generic memory",
       },
       "inst_modifiers": ["ldst_length", "consistency_scope", "mem_scope", "cache_policy"],
@@ -1742,19 +1785,19 @@
           "operands": [
             { "name": "vaddr", "role": "src0", "kind": "vreg" },
             { "name": "saddr", "role": "src1", "kind": "sreg" },
-            { "name": "offset", "role": "src2", "kind": "imm24" },
-            { "name": "data", "role": "src3", "kind": "vreg" },
+            { "name": "offset", "role": "imme", "kind": "imm24" },
+            { "name": "data", "role": "src2", "kind": "vreg" },
           ],
         },
       },
     },
     "LDC": {
-      "semantics": {
+      "behavior": {
         "effect": "Load from constant memory",
       },
-      "inst_modifiers": ["ldst_length"],
+      "inst_modifiers": ["ldconstant_length"],
       "forms": {
-        "cx[ur][r+imm]": {
+        "v_cx[sreg][vreg+imm16]": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "vreg" },
             { "name": "vaddr", "role": "src0", "kind": "vreg" },
@@ -1773,29 +1816,32 @@
       },
     },
     "atom": {
-      "semantics": {
+      "behavior": {
         "effect": "Perform atomic operation on generic memory",
         "SASS": "ATOM",
       },
+      "forms": {},
     },
     "atoms": {
-      "semantics": {
+      "behavior": {
         "effect": "Perform atomic operation on shared memory",
         "SASS": "ATOMS",
       },
+      "forms": {},
     },
     "atomg": {
-      "semantics": {
+      "behavior": {
         "effect": "Perform atomic operation on global memory",
         "SASS": "ATOMG",
       },
+      "forms": {},
     },
 
     ////////////////////////////////
     /* Miscellaneous Instructions */
     ////////////////////////////////
     "nop": {
-      "semantics": {
+      "behavior": {
         "effect": "no operation",
         "SASS": "NOP",
       },
@@ -1810,7 +1856,7 @@
     /* Intra-warp Instructions */
     /////////////////////////////
     "vote": {
-      "semantics": {
+      "behavior": {
         "SASS": "VOTE",
       },
       "local_modifier_defs": {
@@ -1837,7 +1883,7 @@
       },
     },
     "match": {
-      "semantics": {
+      "behavior": {
         "SASS": "MATCH",
       },
       "local_modifier_defs": {
@@ -1866,7 +1912,7 @@
       },
     },
     "shfl": {
-      "semantics": {
+      "behavior": {
         "effect": "pout, dst = shuffle(src0, src1, src2)",
         "notes": [
           "src0: 要被 shuffle 的“值”",
@@ -1925,11 +1971,12 @@
         },
       },
     },
+
     ///////////////////////////////////
     /* Uniform Datapath Instructions */
     ///////////////////////////////////
-    "ubmsk": {
-      "semantics": {
+    "s_bmsk": {
+      "behavior": {
         "effect": "dst = ((1 << src0[4:0].u32) - 1) << src1[4:0].u32",
         "SASS": "UBMSK",
         "notes": ["Generate a bitmask with length and position specified."],
@@ -1959,8 +2006,8 @@
         },
       },
     },
-    "ubrev": {
-      "semantics": {
+    "s_brev": {
+      "behavior": {
         "effect": "scalar (uniform) bitwise reverse",
         "SASS": "UBREV",
       },
@@ -1979,8 +2026,8 @@
         },
       },
     },
-    "uflo": {
-      "semantics": {
+    "s_flo": {
+      "behavior": {
         "effect": "scalar (uniform) find leading one",
         "SASS": "UFLO",
       },
@@ -2000,8 +2047,8 @@
         },
       },
     },
-    "upopc": {
-      "semantics": {
+    "s_popc": {
+      "behavior": {
         "effect": "scalar (uniform) population count",
         "SASS": "UPOPC",
       },
@@ -2020,8 +2067,8 @@
         },
       },
     },
-    "uprmt": {
-      "semantics": {
+    "s_prmt": {
+      "behavior": {
         "effect": "scalar (uniform) permute",
         "SASS": "UPRMT",
       },
@@ -2044,14 +2091,13 @@
         },
       },
     },
-    "uiadd": {
-      "semantics": {
+    "s_iadd": {
+      "behavior": {
         "effect": "scalar (uniform) integer addition/subtraction",
         "SASS": "UIADD",
       },
       "local_modifier_defs": {
-        // 加法长度：32bit/64bit/32bit widening
-        "uadd_length": {
+        "s_add_length": {
           "bits": 2,
           "enum": ["U32", "U64", "U32_WIDEN"],
           "meaning": [
@@ -2062,7 +2108,7 @@
           ],
         },
       },
-      "inst_modifiers": ["uadd_length"],
+      "inst_modifiers": ["s_add_length"],
       "forms": {
         "x_xx": {
           "operands": [
@@ -2080,8 +2126,8 @@
         },
       },
     },
-    "uimnmx": {
-      "semantics": {
+    "s_imnmx": {
+      "behavior": {
         "effect": "scalar (uniform) integer min/max",
         "SASS": "UIMNMX",
       },
@@ -2104,22 +2150,24 @@
         },
       },
     },
-    "uimad": {
-      "semantics": {
+    "s_imad": {
+      "behavior": {
         "effect": "scalar (uniform) integer multiply-add",
         "SASS": "UIMAD",
         "notes": ["dst = src0 * src1 + src2"],
       },
+      "forms": {},
     },
-    "uimul": {
-      "semantics": {
+    "s_imul": {
+      "behavior": {
         "effect": "scalar (uniform) integer multiply",
         "SASS": "UIMUL",
         "notes": ["dst = src0 * src1"],
       },
+      "forms": {},
     },
     "auipc": {
-      "semantics": {
+      "behavior": {
         "effect": "Get the current PC-relative address and add an immediate offset",
       },
       "forms": {
@@ -2131,72 +2179,71 @@
         },
       },
     },
-    "csrrc": {
-      "semantics": {
-        "notes": ["记控制状态寄存器 csr 中的值为 t。把 t 和寄存器 x[rs1] 按位与的结果写入 csr，再把 t 写入 x[rd]。"],
+
+    //////////////////////////////////
+    /* GPU CSR / HW Register Access */
+    //////////////////////////////////
+    "s_getcsr": {
+      "behavior": {
+        "effect": "dst = (CSR[csrid] >> offset) & ((1<<size)-1)",
+        "notes": [
+          "参考 AMD CDNA 的 S_GETREG_B32。",
+          "GPU CSR bitfield 访问：对 CSR 做字段抽取。",
+          "该类指令共享用 imm16 描述寄存器字段的编码方式：csrid=imm16[5:0]，offset=imm16[10:6]，size=imm16[15:11]+1（范围 1..32）。",
+          "读取语义：从 CSR[csrid] 抽取 [offset +: size] 并右对齐写入 dst。",
+        ],
       },
       "forms": {
-        "x_xr": {
+        "x_i": {
           "operands": [
             { "name": "dst", "role": "dst", "kind": "sreg" },
-            { "name": "csr", "role": "src0", "kind": "imm12" },
-            { "name": "src1", "role": "src1", "kind": "sreg" },
+            { "name": "csr_field", "role": "src0", "kind": "imm16" },
           ],
         },
       },
     },
-    "csrrci": {
-      "semantics": {
-        "notes": ["记控制状态寄存器 csr 中的值为 t。把 t 和立即数 zimm 按位与的结果写入 csr，再把 t 写入 x[rd]。"],
+    "v_getcsr": {
+      "behavior": {
+        "effect": "dst = (CSR[csrid] >> offset) & ((1<<size)-1)",
+        "notes": ["for per-thread CSR only", "目前仅用于读取 threadIdx.x/y/z 等 per-thread CSR。"],
       },
       "forms": {
-        "x_xi": {
+        "v_i": {
           "operands": [
-            { "name": "dst", "role": "dst", "kind": "sreg" },
-            { "name": "csr", "role": "src0", "kind": "imm12" },
-            { "name": "src1", "role": "src1", "kind": "imm5" },
+            { "name": "dst", "role": "dst", "kind": "vreg" },
+            { "name": "csr_field", "role": "src0", "kind": "imm16" },
           ],
         },
       },
     },
-    "csrrs": {
-      "semantics": {
-        "notes": ["记控制状态寄存器 csr 中的值为 t。把 t 和寄存器 x[rs1] 按位或的结果写入 csr，再把 t 写入 x[rd]。"],
+    "s_setcsr": {
+      "behavior": {
+        "effect": "let fieldMask = (((1<<size)-1) << offset); let mask = fieldMask & CsrWriteMask(csrid, PRIV); CSR[csrid] = (CSR[csrid] & ~mask) | ((src << offset) & mask)",
+        "notes": [
+          "参考 AMD CDNA 的 S_SETREG_B32。",
+          "字段覆盖写：对目标寄存器的 [offset +: size] 写入字段值，其余位保持不变。",
+          "src 的低 size 位作为字段值写入；写入受权限/可写位掩码裁剪；某些位的修改可能触发 side-effect。",
+        ],
       },
       "forms": {
-        "x_xr": {
+        "ix": {
           "operands": [
-            { "name": "dst", "role": "dst", "kind": "sreg" },
-            { "name": "csr", "role": "src0", "kind": "imm12" },
-            { "name": "src1", "role": "src1", "kind": "sreg" },
+            { "name": "csr_field", "role": "src0", "kind": "imm16" },
+            { "name": "src", "role": "src1", "kind": "sreg" },
           ],
         },
       },
     },
-    "csrrw": {
-      "semantics": {
-        "notes": ["把寄存器 x[rs1] 的值写入控制状态寄存器 csr，同时把 csr 中的值写入 x[rd]。"],
+    "s_setcsr_imm32": {
+      "behavior": {
+        "effect": "let fieldMask = (((1<<size)-1) << offset); let mask = fieldMask & CsrWriteMask(csrid, PRIV); CSR[csrid] = (CSR[csrid] & ~mask) | ((imm << offset) & mask)",
+        "notes": ["参考 AMD CDNA 的 S_SETREG_IMM32_B32。", "与 s_setcsr 同语义、同写掩码/权限裁剪/副作用逻辑，但写入源是 32-bit imm。"],
       },
       "forms": {
-        "x_xr": {
+        "ii": {
           "operands": [
-            { "name": "dst", "role": "dst", "kind": "sreg" },
-            { "name": "csr", "role": "src0", "kind": "imm12" },
-            { "name": "src1", "role": "src1", "kind": "sreg" },
-          ],
-        },
-      },
-    },
-    "csrrwi": {
-      "semantics": {
-        "notes": ["把立即数 zimm 写入控制状态寄存器 csr，同时把 csr 中的值写入 x[rd]。"],
-      },
-      "forms": {
-        "x_xi": {
-          "operands": [
-            { "name": "dst", "role": "dst", "kind": "sreg" },
-            { "name": "csr", "role": "src0", "kind": "imm12" },
-            { "name": "src1", "role": "src1", "kind": "imm5" },
+            { "name": "csr_field", "role": "src0", "kind": "imm16" },
+            { "name": "imm", "role": "src1", "kind": "imm32" },
           ],
         },
       },

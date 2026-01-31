@@ -142,7 +142,7 @@ def validate_string_list(value, path: str, errors, unique: bool = False):
     return out
 
 
-def validate_semantics(value, path: str, errors) -> None:
+def validate_behavior(value, path: str, errors) -> None:
     if not ensure_dict(value, path, errors):
         return
     allowed = {"effect", "SASS", "notes"}
@@ -418,7 +418,7 @@ def validate_forms_list(
         if not ensure_dict(form, form_path, errors):
             continue
         allowed = {
-            "semantics",
+            "behavior",
             "fixed_modi_vals",
             "local_modifier_defs",
             "inst_modifiers",
@@ -429,9 +429,9 @@ def validate_forms_list(
         for key in form:
             if key not in allowed:
                 add_error(errors, path_key(form_path, key), "unexpected field")
-        if "semantics" in form:
-            validate_semantics(
-                form["semantics"], path_key(form_path, "semantics"), errors
+        if "behavior" in form:
+            validate_behavior(
+                form["behavior"], path_key(form_path, "behavior"), errors
             )
         form_local_defs = {}
         if "local_modifier_defs" in form:
@@ -568,7 +568,7 @@ def validate_instruction(
     if not ensure_dict(value, path, errors):
         return
     allowed = {
-        "semantics",
+        "behavior",
         "local_modifier_defs",
         "inst_modifiers",
         "fixed_modifiers",
@@ -579,8 +579,8 @@ def validate_instruction(
             add_error(errors, path_key(path, key), "unexpected field")
     if "forms" not in value:
         add_error(errors, path, "missing required field 'forms'")
-    if "semantics" in value:
-        validate_semantics(value["semantics"], path_key(path, "semantics"), errors)
+    if "behavior" in value:
+        validate_behavior(value["behavior"], path_key(path, "behavior"), errors)
     instr_local_defs = {}
     if "local_modifier_defs" in value:
         instr_local_defs, _ = validate_modifier_defs(
